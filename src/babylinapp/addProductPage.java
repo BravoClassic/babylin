@@ -16,7 +16,7 @@ public class addProductPage extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("addProductPage.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("newProductPage.fxml"));
         primaryStage.setTitle("Babylin Consult | Add Product");
         primaryStage.setScene(new Scene(root, 500, 300));
         primaryStage.show();
