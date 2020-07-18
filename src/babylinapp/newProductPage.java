@@ -8,7 +8,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class deleteProductPage extends Application {
+public class newProductPage extends Application {
 
     public static void main(String[] args) {
         launch(args);
@@ -16,9 +16,9 @@ public class deleteProductPage extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("deleteProductPage.fxml"));
-        primaryStage.setTitle("Babylin Consult | Delete Product");
-        primaryStage.setScene(new Scene(root, 300, 300));
+        Parent root = FXMLLoader.load(getClass().getResource("newProductPage.fxml"));
+        primaryStage.setTitle("Babylin Consult | Add Product");
+        primaryStage.setScene(new Scene(root, 500, 300));
         primaryStage.show();
     }
 }
