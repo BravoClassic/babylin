@@ -8,22 +8,21 @@
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="babylinapp.addProductPageController">
    <HBox prefHeight="300.0" prefWidth="300.0">
       <AnchorPane prefHeight="300.0" prefWidth="300.0">
-         <children>
-            <Label alignment="CENTER" layoutX="91.0" layoutY="43.0" prefHeight="52.0" prefWidth="119.0"
-                   text="Add Product">
-               <font>
-                  <Font size="17.0"/>
-               </font>
-            </Label>
-            <ComboBox fx:id="productList" layoutX="81.0" layoutY="125.0" onAction="#increaseQuantity"
-                      prefWidth="150.0" promptText="Select a Product"/>
-            <TextField fx:id="addProductQuantity" layoutX="81.0" layoutY="177.0" prefHeight="25.0" prefWidth="150.0"
-                       promptText="Product Quantiy"/>
-            <Button fx:id="add" layoutX="81.0" layoutY="241.0" mnemonicParsing="false" onAction="#increaseQuantity"
-                    prefHeight="25.0" prefWidth="62.0" text="Add"/>
-            <Button fx:id="back" layoutX="169.0" layoutY="241.0" mnemonicParsing="false" prefHeight="25.0"
-                    prefWidth="62.0" text="Cancel"/>
-         </children>
+         <Label alignment="CENTER" layoutX="91.0" layoutY="43.0" prefHeight="52.0" prefWidth="119.0"
+                text="Add Product">
+            <font>
+               <Font size="17.0"/>
+            </font>
+         </Label>
+         <ComboBox fx:id="productList" layoutX="81.0" layoutY="125.0" onAction="#increaseQuantity"
+                   prefWidth="150.0" promptText="Select a Product"/>
+         <TextField fx:id="addProductQuantity" layoutX="81.0" layoutY="177.0" prefHeight="25.0" prefWidth="150.0"
+                    promptText="Product Quantity"/>
+         <Button fx:id="add" layoutX="81.0" layoutY="241.0" mnemonicParsing="false" onAction="#increaseQuantity"
+                 prefHeight="25.0" prefWidth="62.0" text="Add"/>
+         <Button fx:id="back" layoutX="169.0" layoutY="241.0" mnemonicParsing="false" onAction="#goBack"
+                 prefHeight="25.0"
+                 prefWidth="62.0" text="Cancel"/>
       </AnchorPane>
    </HBox>
 </AnchorPane>

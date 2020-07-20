@@ -54,10 +54,10 @@ public class stocksController implements Initializable {
 
         ResultSet resultSet = preparedStatement.executeQuery();
         while (resultSet.next()) {
-            String result = resultSet.getString("productName");
+            String result = resultSet.getString("stockName");
             Integer result1=resultSet.getInt("quantity");
             Double result2= resultSet.getDouble("unitPrice");
-            String result3 = resultSet.getString("productDescription");
+            String result3 = resultSet.getString("stockDescription");
             stockList.add(new stocksClass(result, result1, result2, result3));
         }
         connection.close();
@@ -69,9 +69,13 @@ public class stocksController implements Initializable {
         new newProductPage().start(stage);
     }
 
-    public void deleteProduct() throws IOException{
+    public void deleteStock() throws IOException{
         Stage stage = (Stage) delete.getScene().getWindow();
         new deleteProductPage().start(stage);
+    }
+    public void newStock() throws IOException{
+        Stage stage = (Stage) newBtn.getScene().getWindow();
+        new newStockPage().start(stage);
     }
 
     public void goBack() throws IOException {
