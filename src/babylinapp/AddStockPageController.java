@@ -4,11 +4,17 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
+
+import java.io.IOException;
 
 public class AddStockPageController {
 
     @FXML
     protected Button addStockBtn;
+
+    @FXML
+    protected Button cancel;
 
     @FXML
     protected TextField addStockQuantity;
@@ -22,7 +28,8 @@ public class AddStockPageController {
     }
 
     @FXML
-    protected void  cancel(){
-        System.out.println("Hello!");
+    protected void  goBack() throws IOException {
+        Stage stage = (Stage) cancel.getScene().getWindow();
+        new stocks().start(stage);
     }
 }

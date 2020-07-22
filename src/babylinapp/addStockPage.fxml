@@ -20,8 +20,7 @@
          ]]></Label>
          <Button fx:id="addStockBtn" layoutX="125.0" layoutY="207.0" mnemonicParsing="false" onAction="#addStock"
                  prefHeight="25.0" prefWidth="70.0" text="Add"/>
-         <Button layoutX="205.0" layoutY="207.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="70.0"
-                 text="Cancel"/>
+         <Button layoutX="205.0" fx:id="cancel" layoutY="207.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="70.0" onAction="#goBack" text="Cancel"/>
       </AnchorPane>
    </HBox>
 </AnchorPane>
