@@ -78,6 +78,11 @@ public class stocksController implements Initializable {
         new newStockPage().start(stage);
     }
 
+    public void updateStock() throws IOException {
+        Stage stage = (Stage) update.getScene().getWindow();
+        new updateStockPage().start(stage);
+    }
+
     public void goBack() throws IOException {
         Stage stage = (Stage) back.getScene().getWindow();
         new Menu().start(stage);
