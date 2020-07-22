@@ -56,6 +56,6 @@ public class NewStockPageController {
 
     public void goBack() throws IOException {
         Stage stage = (Stage) cancel.getScene().getWindow();
-        new Menu().start(stage);
+        new stocks().start(stage);
     }
 }

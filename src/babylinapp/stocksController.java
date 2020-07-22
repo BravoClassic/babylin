@@ -66,7 +66,7 @@ public class stocksController implements Initializable {
 
     public void addStock() throws IOException {
         Stage stage = (Stage) add.getScene().getWindow();
-        new newProductPage().start(stage);
+        new addStockPage().start(stage);
     }
 
     public void deleteStock() throws IOException{
