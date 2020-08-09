@@ -6,7 +6,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
 import java.util.ArrayList;
@@ -78,6 +80,12 @@ public class ordersController implements Initializable {
     public void clear(){
         productList.setPromptText("Select a Product");
         quantity.decrement((Integer) quantity.getValue()-1);
+    }
+
+    @FXML
+    public void goMenu() throws IOException {
+        Stage stage = (Stage) menu.getScene().getWindow();
+        new Menu().start(stage);
     }
 
     @FXML
