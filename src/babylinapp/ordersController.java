@@ -61,7 +61,7 @@ public class ordersController implements Initializable {
         id.setCellValueFactory(new PropertyValueFactory<>("productID"));
         productName.setCellValueFactory(new PropertyValueFactory<>("productName"));
         quantityColumn.setCellValueFactory(new PropertyValueFactory<>("productQuantity"));
-        productClass.setProductQuantity((Integer) quantity.getValue());
+        productListTable.get(productList.getSelectionModel().getSelectedIndex()).setProductQuantity((Integer) quantity.getValue());
 //        productListTable.get(productList.getSelectionModel().getSelectedIndex()).productPrice.intValue();
         orderList.add(productListTable.get(productList.getSelectionModel().getSelectedIndex()));
         tableOrder.getItems().add(productListTable.get(productList.getSelectionModel().getSelectedIndex()));
@@ -69,15 +69,20 @@ public class ordersController implements Initializable {
 
 
     @FXML
-
     public void setQuantity() {
         valueFactory=new SpinnerValueFactory.IntegerSpinnerValueFactory(1,quantityList.get(productList.getSelectionModel().getSelectedIndex()),0);
         quantity.setValueFactory(valueFactory);
     }
 
+    @FXML
+    public void clear(){
+        productList.setPromptText("Select a Product");
+        quantity.decrement((Integer) quantity.getValue()-1);
+    }
 
     @FXML
     protected void placeOrder() {
+        Controller.infoBox("Total Cost: GHC "+(orderList.get(0).getProductQuantity()*orderList.get(0).getProductPrice()), "Cost of "+orderList.get(0).getProductName(), "Order Number - 001");
         System.out.println(orderList.get(0).getProductName());
         System.out.println(orderList.get(0).getProductQuantity());
         System.out.println(orderList.get(0).getProductPrice());
