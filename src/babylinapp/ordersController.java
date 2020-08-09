@@ -51,6 +51,9 @@ public class ordersController implements Initializable {
 
     ObservableList<productClass> productListTable = FXCollections.observableArrayList();
 
+    ObservableList<productClass> orderList = FXCollections.observableArrayList();
+
+
     private SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, 0);
 //    public Object productClass;
 
@@ -60,6 +63,7 @@ public class ordersController implements Initializable {
         quantityColumn.setCellValueFactory(new PropertyValueFactory<>("productQuantity"));
         productClass.setProductQuantity((Integer) quantity.getValue());
 //        productListTable.get(productList.getSelectionModel().getSelectedIndex()).productPrice.intValue();
+        orderList.add(productListTable.get(productList.getSelectionModel().getSelectedIndex()));
         tableOrder.getItems().add(productListTable.get(productList.getSelectionModel().getSelectedIndex()));
     }
 
@@ -72,6 +76,12 @@ public class ordersController implements Initializable {
     }
 
 
+    @FXML
+    protected void placeOrder() {
+        System.out.println(orderList.get(0).getProductName());
+        System.out.println(orderList.get(0).getProductQuantity());
+        System.out.println(orderList.get(0).getProductPrice());
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
