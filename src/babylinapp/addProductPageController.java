@@ -29,8 +29,8 @@ public class addProductPageController implements Initializable {
     public void increaseQuantity() throws SQLException {
         Connection connection = DriverManager.getConnection(jdbcController.url, jdbcController.user, jdbcController.password);
         PreparedStatement preparedStatement = connection.prepareStatement(jdbcController.UPDATE_QUERY_PRODUCTS_QUANTITY);
-        preparedStatement.setString(0, (String) productList.getValue());
-        preparedStatement.setInt(1, Integer.parseInt(addProductQuantity.getText()));
+        preparedStatement.setString(1, (String) productList.getValue());
+        preparedStatement.setInt(2, Integer.parseInt(addProductQuantity.getText()));
         boolean resultSet = preparedStatement.execute();
 
         if (resultSet) {

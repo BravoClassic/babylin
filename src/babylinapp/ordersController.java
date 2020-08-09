@@ -94,6 +94,8 @@ public class ordersController implements Initializable {
         System.out.println(orderList.get(0).getProductName());
         System.out.println(orderList.get(0).getProductQuantity());
         System.out.println(orderList.get(0).getProductPrice());
+        System.out.println(orderList.get(tableOrder.getSelectionModel().getSelectedIndex()).getProductName());
+        System.out.println(orderList.get(tableOrder.getSelectionModel().getSelectedIndex()).getProductQuantity());
     }
 
     @Override
