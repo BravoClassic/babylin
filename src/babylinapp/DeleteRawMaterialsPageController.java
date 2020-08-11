@@ -2,7 +2,7 @@ package babylinapp;
 
 import javafx.fxml.FXML;
 
-public class DeleteStockPageController {
+public class DeleteRawMaterialsPageController {
 
     @FXML
     protected void deleteStock(){

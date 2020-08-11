@@ -18,7 +18,7 @@
          <TextField fx:id="newProductPriceProductPage" layoutX="53.0" layoutY="137.0" prefHeight="25.0"
                     prefWidth="205.0" promptText="Product Unit Price(GHS)"/>
          <TextField fx:id="newProductQuantityProductPage" layoutX="53.0" layoutY="187.0" prefHeight="25.0"
-                    prefWidth="205.0" promptText="Product Quanity"/>
+                    prefWidth="205.0" promptText="Product Quantity"/>
          <TextArea fx:id="newProductDescProductPage" layoutX="53.0" layoutY="230.0" prefHeight="159.0" prefWidth="205.0"
                    promptText="Product Description"/>
          <Button layoutX="94.0" layoutY="429.0" mnemonicParsing="false" onAction="#newProduct" prefHeight="25.0"

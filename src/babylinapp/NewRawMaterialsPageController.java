@@ -12,50 +12,50 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class NewStockPageController {
+public class NewRawMaterialsPageController {
 
     @FXML
-    protected Button newBtnStock;
+    protected Button newBtnRawMaterials;
 
     @FXML
-    protected TextField newStockNameProductPage;
+    protected TextField newRawMaterialNamePage;
 
     @FXML
-    protected TextField newStockPriceStockPage;
+    protected TextField newRawMaterialsPricePage;
 
     @FXML
-    protected TextField newStockQuantityStockPage;
+    protected TextField newRawMaterialsQuantityPage;
 
     @FXML
-    protected TextArea newStockDescStockPage;
+    protected TextArea newRawMaterialsDescPage;
 
     @FXML
     protected Button cancel;
 
-    public void newStock() {
+    public void newRawMaterials() {
         try {
             Connection connection = DriverManager.getConnection(jdbcController.url, jdbcController.user, jdbcController.password);
             PreparedStatement preparedStatement = connection.prepareStatement(jdbcController.INSERT_QUERY_STOCK);
-            preparedStatement.setString(0,newStockNameProductPage.getText());
-            preparedStatement.setString(1,newStockPriceStockPage.getText());
-            preparedStatement.setString(2,newStockQuantityStockPage.getText());
-            preparedStatement.setString(3,newStockDescStockPage.getText());
+            preparedStatement.setString(1,newRawMaterialNamePage.getText());
+            preparedStatement.setString(2,newRawMaterialsPricePage.getText());
+            preparedStatement.setString(3,newRawMaterialsQuantityPage.getText());
+            preparedStatement.setString(4,newRawMaterialsDescPage.getText());
 
             boolean resultSet = preparedStatement.execute();
 
             if (resultSet){
-                Controller.infoBox("New Stock has been added successfully!",null,"Success!");
+                Controller.infoBox("New raw material has been added successfully!",null,"Success!");
             }else {
-                Controller.infoBox("New Stock has not been added successfully!",null, "Failed!");
+                Controller.infoBox("New raw materials has not been added successfully!",null, "Failed!");
             }
         }catch (SQLException e) {
-            e.printStackTrace();
+           jdbcController.printSQLException(e);
         }
 
     }
 
     public void goBack() throws IOException {
         Stage stage = (Stage) cancel.getScene().getWindow();
-        new stocks().start(stage);
+        new rawMaterials().start(stage);
     }
 }

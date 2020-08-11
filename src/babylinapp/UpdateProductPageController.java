@@ -2,10 +2,7 @@ package babylinapp;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -27,10 +24,14 @@ public class UpdateProductPageController implements Initializable {
     @FXML
     protected Button update;
 
+//    private SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, 0);
+
+
     @FXML
     protected void update() throws SQLException {
         Connection connection = DriverManager.getConnection(jdbcController.url,jdbcController.user,jdbcController.password);
-        PreparedStatement preparedStatement = connection.prepareStatement(jdbcController.UPDATE_QUERY_STOCK);
+        PreparedStatement preparedStatement = connection.prepareStatement(jdbcController.UPDATE_QUERY_PRODUCTS_QUANTITY);
+        preparedStatement.setString(1,productList.getValue());
         boolean resultSet = preparedStatement.execute();
 
         if (resultSet){
@@ -40,11 +41,39 @@ public class UpdateProductPageController implements Initializable {
         }
     }
 
+    @FXML
+    protected void display(){
+        String pN = productList.getValue();//Product Name
+        Integer pQ=0; //Get Quantity
+        Integer pP=0;//Get unit price
+        String pD="";//Get product Description
+
+        try {
+            Connection connection = DriverManager.getConnection(jdbcController.url,jdbcController.user,jdbcController.password);
+            PreparedStatement preparedStatement = connection.prepareStatement(jdbcController.SELECT_QUERY_PRODUCTS_ADD);
+            preparedStatement.setString(1,pN);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            pQ=resultSet.getInt("quantity");
+            pP=resultSet.getInt("unitPrice");
+            pD=resultSet.getString("productDescription");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        productName.setText(pN);
+        productQuantity.setText(pQ.toString());
+        productUnitPrice.setText(pP.toString());
+        productDescription.setText(pD);
+    }
+
 
     @FXML
     protected void goBack() throws IOException {
+        productName.setText("");
+        productQuantity.setText("");
+        productUnitPrice.setText("");
+        productDescription.setText("");
         Stage stage = (Stage) cancel.getScene().getWindow();
-        new stocks().start(stage);
+        new rawMaterials().start(stage);
     }
     @FXML
     protected void viewProduct() throws SQLException {

@@ -8,7 +8,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class updateStockPage extends Application {
+public class updateRawMaterialsPage extends Application {
 
     public static void main(String[] args) {
         launch(args);
@@ -16,7 +16,7 @@ public class updateStockPage extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("updateStockPage.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("updateRawMaterialsPage.fxml"));
         primaryStage.setTitle("Babylin Consult | Update Stock");
         primaryStage.setScene(new Scene(root, 400, 550));
         primaryStage.show();

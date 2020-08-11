@@ -14,13 +14,14 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 
-public class UpdateStockPageController {
-    public TextField stockUnitPrice;
-    public TextField stockQuantity;
-    public TextArea stockDescription;
-    public TextField stockName;
+public class UpdateRawMaterialsController {
+    public TextField rawMaterialsUnitPrice;
+    public TextField rawMaterialsQuantity;
+    public TextArea rawMaterialsDescription;
+    public TextField rawMaterialsName;
+
     @FXML
-    private ComboBox stockList;
+    private ComboBox rawMaterialsList;
 
     @FXML
     protected Button cancel;
@@ -35,9 +36,9 @@ public class UpdateStockPageController {
         boolean resultSet = preparedStatement.execute();
 
         if (resultSet){
-            Controller.infoBox("Successfully updated "+stockList.getValue(),null,"Success");
+            Controller.infoBox("Successfully updated "+rawMaterialsList.getValue(),null,"Success");
         }else {
-            Controller.infoBox("Failed to update "+stockList.getValue(),null,"Failed!");
+            Controller.infoBox("Failed to update "+rawMaterialsList.getValue(),null,"Failed!");
         }
     }
 
@@ -45,6 +46,6 @@ public class UpdateStockPageController {
     @FXML
     protected void goBack() throws IOException {
         Stage stage = (Stage) cancel.getScene().getWindow();
-        new stocks().start(stage);
+        new rawMaterials().start(stage);
     }
 }

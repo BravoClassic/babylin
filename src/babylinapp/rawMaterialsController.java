@@ -15,13 +15,13 @@ import java.net.URL;
 import java.sql.*;
 import java.util.ResourceBundle;
 
-public class stocksController implements Initializable {
+public class rawMaterialsController implements Initializable {
 
     @FXML
-    TableView<stocksClass> table;
+    TableView<rawMaterialsClass> table;
 
     @FXML
-    TableColumn<stocksClass, String> columnStocks;
+    TableColumn<rawMaterialsClass, String> columnRawMaterials;
 
     @FXML
     Button back;
@@ -44,10 +44,10 @@ public class stocksController implements Initializable {
     @FXML
     Button update;
 
-    ObservableList<stocksClass> stockList= FXCollections.observableArrayList();
+    ObservableList<rawMaterialsClass> rawMaterialsList = FXCollections.observableArrayList();
 
 
-    public void viewStock() throws SQLException {
+    protected void vewRawMaterials() throws SQLException {
 
         Connection connection = DriverManager.getConnection(jdbcController.url, jdbcController.user, jdbcController.password);
         PreparedStatement preparedStatement = connection.prepareStatement(jdbcController.SELECT_QUERY_STOCK);
@@ -58,29 +58,29 @@ public class stocksController implements Initializable {
             Integer result1=resultSet.getInt("quantity");
             Double result2= resultSet.getDouble("unitPrice");
             String result3 = resultSet.getString("stockDescription");
-            stockList.add(new stocksClass(result, result1, result2, result3));
+            rawMaterialsList.add(new rawMaterialsClass(result, result1, result2, result3));
         }
         connection.close();
 
     }
 
-    public void addStock() throws IOException {
+    public void addRawMaterials() throws IOException {
         Stage stage = (Stage) add.getScene().getWindow();
-        new addStockPage().start(stage);
+        new addRawMaterialsPage().start(stage);
     }
 
-    public void deleteStock() throws IOException{
+    public void deleteRawMaterials() throws IOException{
         Stage stage = (Stage) delete.getScene().getWindow();
-        new deleteProductPage().start(stage);
+        new deleteRawMaterialsPage().start(stage);
     }
-    public void newStock() throws IOException{
+    public void newRawMaterials() throws IOException{
         Stage stage = (Stage) newBtn.getScene().getWindow();
-        new newStockPage().start(stage);
+        new newRawMaterialsPage().start(stage);
     }
 
-    public void updateStock() throws IOException {
+    public void updateRawMaterials() throws IOException {
         Stage stage = (Stage) update.getScene().getWindow();
-        new updateStockPage().start(stage);
+        new updateRawMaterialsPage().start(stage);
     }
 
     public void goBack() throws IOException {
@@ -91,12 +91,13 @@ public class stocksController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
-            viewStock();
+            vewRawMaterials();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        columnStocks.setCellValueFactory(new PropertyValueFactory<>("stockName"));
-        table.setItems(stockList);
+
+        columnRawMaterials.setCellValueFactory(new PropertyValueFactory<>("rawMaterialsName"));
+        table.setItems(rawMaterialsList);
 //        System.out.println(table.getSelectionModel().getSelectedItem().getProductName());
     }
 }

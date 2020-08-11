@@ -26,7 +26,7 @@ public class ordersController implements Initializable {
     protected Button clear;
 
     @FXML
-    protected  Button cancel;
+    protected  Button delete;
 
     @FXML
     protected  Button order;
@@ -55,9 +55,9 @@ public class ordersController implements Initializable {
 
     ObservableList<productClass> orderList = FXCollections.observableArrayList();
 
-
+    double total =0;
+    
     private SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, 0);
-//    public Object productClass;
 
     public void addList(){
         id.setCellValueFactory(new PropertyValueFactory<>("productID"));
@@ -90,18 +90,64 @@ public class ordersController implements Initializable {
 
     @FXML
     protected void placeOrder() {
-        Controller.infoBox("Total Cost: GHC "+(orderList.get(0).getProductQuantity()*orderList.get(0).getProductPrice()), "Cost of "+orderList.get(0).getProductName(), "Order Number - 001");
-        System.out.println(orderList.get(0).getProductName());
-        System.out.println(orderList.get(0).getProductQuantity());
-        System.out.println(orderList.get(0).getProductPrice());
-        System.out.println(orderList.get(tableOrder.getSelectionModel().getSelectedIndex()).getProductName());
-        System.out.println(orderList.get(tableOrder.getSelectionModel().getSelectedIndex()).getProductQuantity());
+        String p = "";
+
+        if (orderList.size()>1)
+             p="Products";
+         else
+             p="Product";
+
+         if(orderList.size()>0) {
+             total=0;
+             for (int i = 0; i < orderList.size(); i++) {
+                 total += orderList.get(i).getProductQuantity() * orderList.get(i).getProductPrice();
+             }
+             Controller.infoBox("Total Cost: GHC " + total, "Cost of " + p, "Order Number - 001");
+         }
+         else {
+             Controller.showAlert(Alert.AlertType.ERROR,order.getScene().getWindow(),"Error | Empty Cart", "Please select a product(s) to purchase");
+         }
+//        System.out.println(orderList.get(0).getProductName());
+//        System.out.println(orderList.get(0).getProductQuantity());
+//        System.out.println(orderList.get(0).getProductPrice());
+    }
+
+    protected void placeOrderDB(Integer p, String n){
+        try {
+            Connection connection = DriverManager.getConnection(jdbcController.url,jdbcController.user,jdbcController.password);
+            PreparedStatement preparedStatement = connection.prepareStatement(jdbcController.UPDATE_QUERY_PRODUCTS_QUANTITY_SUB);
+            preparedStatement.setInt(1,p);
+            preparedStatement.setString(2,n);
+            Boolean resultSet = preparedStatement.execute();
+            if (resultSet)
+                Controller.showAlert(Alert.AlertType.INFORMATION,order.getScene().getWindow(),"Purchased Products","Thank for purchasing Bn Natural Foods products");
+            else
+                Controller.showAlert(Alert.AlertType.ERROR,order.getScene().getWindow(),"Error Purchasing Products","There was an error purchasing Bn Natural Foods products");
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    @FXML
+    protected void delete(){
+        Integer rowInTable=tableOrder.getSelectionModel().getSelectedIndex();
+        if (total>0)
+            total-=orderList.get(tableOrder.getSelectionModel().getSelectedIndex()).getProductQuantity()*orderList.get(tableOrder.getSelectionModel().getSelectedIndex()).getProductPrice();
+
+        tableOrder.getItems().remove(tableOrder.getItems().get(rowInTable));
+        orderList.remove(orderList.get(rowInTable));
+//        tableOrder.getItems().remove(rowInTable);
+//        System.out.println(tableOrder.getItems().get(rowInTable));
+//        System.out.println(orderList.get(tableOrder.getSelectionModel().getSelectedIndex()).getProductName());
+//        System.out.println(orderList.get(tableOrder.getSelectionModel().getSelectedIndex()).getProductQuantity());
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
-            Connection connection = DriverManager.getConnection(jdbcController.url,jdbcController.user,jdbcController.password);
+            Connection connection = DriverManager.getConnection(jdbcController.url, jdbcController.user, jdbcController.password);
             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM babylinapp_products");
 
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -120,5 +166,5 @@ public class ordersController implements Initializable {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-}
+    }
 }
