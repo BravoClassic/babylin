@@ -2,6 +2,7 @@ package babylinapp;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.stage.Stage;
@@ -26,17 +27,30 @@ public class addProductPageController implements Initializable {
     javafx.scene.control.TextField addProductQuantity;
 
 
-    public void increaseQuantity() throws SQLException {
-        Connection connection = DriverManager.getConnection(jdbcController.url, jdbcController.user, jdbcController.password);
-        PreparedStatement preparedStatement = connection.prepareStatement(jdbcController.UPDATE_QUERY_PRODUCTS_QUANTITY);
-        preparedStatement.setString(1, (String) productList.getValue());
-        preparedStatement.setInt(2, Integer.parseInt(addProductQuantity.getText()));
-        boolean resultSet = preparedStatement.execute();
+    public void increaseQuantity() {
+        int val=0;
+        try {
+           val= Integer.parseInt(addProductQuantity.getText());
+        }catch (NumberFormatException r){
+            Controller.showAlert(Alert.AlertType.ERROR,add.getScene().getWindow(),"Error",r.getMessage()+"\n"+"Enter a number");
+            return;
+        }
 
-        if (resultSet) {
-            Controller.infoBox("Added more " + productList.getValue(), null, "Success!");
-        } else {
-            Controller.infoBox("Could not add more of " + productList.getValue(), null, "Failed!");
+        try {
+            Connection connection = DriverManager.getConnection(jdbcController.url, jdbcController.user, jdbcController.password);
+            PreparedStatement preparedStatement = connection.prepareStatement(jdbcController.UPDATE_QUERY_PRODUCTS_QUANTITY);
+            preparedStatement.setString(2, (String) productList.getValue());
+            preparedStatement.setInt(1, val);
+            boolean resultSet = preparedStatement.execute();
+//        System.out.println(resultSet);
+            if (!resultSet) {
+                Controller.infoBox("Added more " + productList.getValue(), null, "Success!");
+            } else {
+                Controller.infoBox("Could not add more of " + productList.getValue(), null, "Failed!");
+            }
+        } catch (SQLException e) {
+           jdbcController.printSQLException(e);
+           return;
         }
     }
 
@@ -59,14 +73,14 @@ public class addProductPageController implements Initializable {
 
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            jdbcController.printSQLException(e);
         }
 
 
         try {
             Objects.requireNonNull(connection).close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            jdbcController.printSQLException(e);
         }
     }
 }

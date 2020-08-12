@@ -4,9 +4,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="300.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/10.0.2-internal"
+<AnchorPane prefHeight="200.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/10.0.2-internal"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="babylinapp.addProductPageController">
-   <HBox prefHeight="300.0" prefWidth="300.0">
+   <HBox prefHeight="200.0" prefWidth="300.0">
       <AnchorPane prefHeight="300.0" prefWidth="300.0">
          <Label alignment="CENTER" layoutX="91.0" layoutY="43.0" prefHeight="52.0" prefWidth="119.0"
                 text="Add Product">
@@ -14,7 +14,7 @@
                <Font size="17.0"/>
             </font>
          </Label>
-         <ComboBox fx:id="productList" layoutX="81.0" layoutY="125.0" onAction="#increaseQuantity"
+         <ComboBox fx:id="productList" layoutX="81.0" layoutY="125.0"
                    prefWidth="150.0" promptText="Select a Product"/>
          <TextField fx:id="addProductQuantity" layoutX="81.0" layoutY="177.0" prefHeight="25.0" prefWidth="150.0"
                     promptText="Product Quantity"/>
