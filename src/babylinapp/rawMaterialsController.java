@@ -47,7 +47,7 @@ public class rawMaterialsController implements Initializable {
     ObservableList<rawMaterialsClass> rawMaterialsList = FXCollections.observableArrayList();
 
 
-    protected void vewRawMaterials() throws SQLException {
+    protected void viewRawMaterials() throws SQLException {
 
         Connection connection = DriverManager.getConnection(jdbcController.url, jdbcController.user, jdbcController.password);
         PreparedStatement preparedStatement = connection.prepareStatement(jdbcController.SELECT_QUERY_STOCK);
@@ -91,7 +91,7 @@ public class rawMaterialsController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
-            vewRawMaterials();
+            viewRawMaterials();
         } catch (SQLException e) {
             e.printStackTrace();
         }

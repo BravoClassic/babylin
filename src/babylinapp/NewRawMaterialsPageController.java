@@ -36,14 +36,15 @@ public class NewRawMaterialsPageController {
         try {
             Connection connection = DriverManager.getConnection(jdbcController.url, jdbcController.user, jdbcController.password);
             PreparedStatement preparedStatement = connection.prepareStatement(jdbcController.INSERT_QUERY_STOCK);
-            preparedStatement.setString(1,newRawMaterialNamePage.getText());
-            preparedStatement.setString(2,newRawMaterialsPricePage.getText());
-            preparedStatement.setString(3,newRawMaterialsQuantityPage.getText());
-            preparedStatement.setString(4,newRawMaterialsDescPage.getText());
+            preparedStatement.setString(1,null);
+            preparedStatement.setString(2,newRawMaterialNamePage.getText());
+            preparedStatement.setDouble(3,Double.parseDouble(newRawMaterialsPricePage.getText()));
+            preparedStatement.setInt(4, Integer.parseInt(newRawMaterialsQuantityPage.getText()));
+            preparedStatement.setString(5,newRawMaterialsDescPage.getText());
 
             boolean resultSet = preparedStatement.execute();
 
-            if (resultSet){
+            if (!resultSet){
                 Controller.infoBox("New raw material has been added successfully!",null,"Success!");
             }else {
                 Controller.infoBox("New raw materials has not been added successfully!",null, "Failed!");

@@ -5,6 +5,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -21,14 +22,14 @@ public class addProductPageController implements Initializable {
     Button back;
 
     @FXML
-    ComboBox productList;
+    ComboBox<String> productList;
 
     @FXML
-    javafx.scene.control.TextField addProductQuantity;
+    TextField addProductQuantity;
 
 
     public void increaseQuantity() {
-        int val=0;
+        int val;
         try {
            val= Integer.parseInt(addProductQuantity.getText());
         }catch (NumberFormatException r){
@@ -39,7 +40,7 @@ public class addProductPageController implements Initializable {
         try {
             Connection connection = DriverManager.getConnection(jdbcController.url, jdbcController.user, jdbcController.password);
             PreparedStatement preparedStatement = connection.prepareStatement(jdbcController.UPDATE_QUERY_PRODUCTS_QUANTITY);
-            preparedStatement.setString(2, (String) productList.getValue());
+            preparedStatement.setString(2, productList.getValue());
             preparedStatement.setInt(1, val);
             boolean resultSet = preparedStatement.execute();
 //        System.out.println(resultSet);
@@ -50,12 +51,11 @@ public class addProductPageController implements Initializable {
             }
         } catch (SQLException e) {
            jdbcController.printSQLException(e);
-           return;
         }
     }
 
     @FXML
-    private void goBack(javafx.event.ActionEvent event) throws IOException {
+    private void goBack() throws IOException {
         Stage stage = (Stage) back.getScene().getWindow();
         new products().start(stage);
     }
