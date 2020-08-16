@@ -21,7 +21,7 @@ public class UpdateRawMaterialsController {
     public TextField rawMaterialsName;
 
     @FXML
-    private ComboBox rawMaterialsList;
+    private ComboBox<String> rawMaterialsList;
 
     @FXML
     protected Button cancel;

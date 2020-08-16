@@ -66,7 +66,7 @@ public class newProductPageClass {
     }
 
     @FXML
-    private void goBack(javafx.event.ActionEvent event) throws IOException {
+    private void goBack() throws IOException {
         Stage stage= (Stage) cancel.getScene().getWindow();
         new products().start(stage);
     }

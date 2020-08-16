@@ -32,6 +32,14 @@ public class addProductPageController implements Initializable {
         int val;
         try {
            val= Integer.parseInt(addProductQuantity.getText());
+           if (productList.getValue()==null){
+               Controller.infoBox("Select a product",null,"Error Select Product");
+               return;
+           }
+           if (val<0) {
+               Controller.infoBox("Enter a positive integer.", null, "Error Integer");
+               return;
+           }
         }catch (NumberFormatException r){
             Controller.showAlert(Alert.AlertType.ERROR,add.getScene().getWindow(),"Error",r.getMessage()+"\n"+"Enter a number");
             return;

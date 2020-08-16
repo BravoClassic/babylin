@@ -44,8 +44,8 @@ public class UpdateProductPageController implements Initializable {
     @FXML
     protected void display(){
         String pN = productList.getValue();//Product Name
-        Integer pQ=0; //Get Quantity
-        Integer pP=0;//Get unit price
+        int pQ=0; //Get Quantity
+        int pP=0;//Get unit price
         String pD="";//Get product Description
 
         try {
@@ -60,8 +60,8 @@ public class UpdateProductPageController implements Initializable {
             e.printStackTrace();
         }
         productName.setText(pN);
-        productQuantity.setText(pQ.toString());
-        productUnitPrice.setText(pP.toString());
+        productQuantity.setText(Integer.toString(pQ));
+        productUnitPrice.setText(Integer.toString(pP));
         productDescription.setText(pD);
     }
 

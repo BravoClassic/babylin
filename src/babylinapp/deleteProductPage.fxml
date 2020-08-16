@@ -7,17 +7,18 @@
 <AnchorPane prefHeight="300.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="babylinapp.DeleteProductPageController">
    <HBox layoutY="-1.0" prefHeight="300.0" prefWidth="300.0">
       <AnchorPane prefHeight="300.0" prefWidth="300.0">
-         <children>
-            <Label layoutX="75.0" layoutY="14.0" prefHeight="51.0" prefWidth="150.0" text="Delete Product" textAlignment="CENTER">
-               <font>
-                  <Font size="17.0" />
-               </font>
-               <alignment>CENTER</alignment>
-            </Label>
-            <Button fx:id="cancel" layoutX="167.0" layoutY="214.0" mnemonicParsing="false" onAction="#back" prefHeight="25.0" prefWidth="65.0" text="Cancel" />
-            <Button fx:id="deletebtn" layoutX="69.0" layoutY="214.0" mnemonicParsing="false" onAction="#delete" prefHeight="25.0" prefWidth="65.0" text="Delete" />
-            <ComboBox fx:id="productList" layoutX="69.0" layoutY="125.0" prefHeight="25.0" prefWidth="163.0" />
-         </children>
+         <Label layoutX="75.0" layoutY="14.0" prefHeight="51.0" prefWidth="150.0" text="Delete Product"
+                textAlignment="CENTER">
+            <font>
+               <Font size="17.0"/>
+            </font>
+            <alignment>CENTER</alignment>
+         </Label>
+         <Button fx:id="cancel" layoutX="167.0" layoutY="214.0" mnemonicParsing="false" onAction="#back"
+                 prefHeight="25.0" prefWidth="65.0" text="Cancel"/>
+         <Button fx:id="deletebtn" layoutX="69.0" layoutY="214.0" mnemonicParsing="false" onAction="#delete"
+                 prefHeight="25.0" prefWidth="65.0" text="Delete"/>
+         <ComboBox fx:id="productList" layoutX="69.0" layoutY="125.0" prefHeight="25.0" prefWidth="163.0"/>
       </AnchorPane>
    </HBox>
 </AnchorPane>

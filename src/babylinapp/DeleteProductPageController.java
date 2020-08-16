@@ -21,7 +21,7 @@ public class DeleteProductPageController implements Initializable {
     Button cancel;
 
     @FXML
-    ComboBox productList;
+    ComboBox<String> productList;
 
 
     @FXML
@@ -29,7 +29,7 @@ public class DeleteProductPageController implements Initializable {
         int selectedIndexCombo = productList.getSelectionModel().getSelectedIndex();
         Connection connection = DriverManager.getConnection(jdbcController.url,jdbcController.user,jdbcController.password);
         PreparedStatement preparedStatement = connection.prepareStatement(jdbcController.DELETE_QUERY_PRODUCTS_DELETE);
-        preparedStatement.setString(1,(String) productList.getValue());
+        preparedStatement.setString(1, productList.getValue());
         boolean resultSet = preparedStatement.execute();
         if (resultSet) {
             Controller.infoBox("Product not deleted successfully!",null,"Failed");
@@ -49,7 +49,7 @@ public class DeleteProductPageController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try (
                 Connection connection = DriverManager.getConnection(jdbcController.url, jdbcController.user, jdbcController.password);
-                PreparedStatement preparedStatement = connection.prepareStatement(jdbcController.SELECT_QUERY_PRODUCTS_PRODUCT_NAME);
+                PreparedStatement preparedStatement = connection.prepareStatement(jdbcController.SELECT_QUERY_PRODUCTS_PRODUCT_NAME)
         ) {
             ResultSet resultSet = preparedStatement.executeQuery();
 

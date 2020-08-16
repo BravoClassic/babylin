@@ -17,7 +17,7 @@ import java.util.ResourceBundle;
 public class ordersController implements Initializable {
 
     @FXML
-    protected ComboBox productList;
+    protected ComboBox<String> productList;
 
     @FXML
     protected Button addProduct;
@@ -35,10 +35,10 @@ public class ordersController implements Initializable {
     protected Button menu;
 
     @FXML
-    protected Spinner quantity;
+    protected Spinner<Integer> quantity;
 
     @FXML
-    protected TableView tableOrder;
+    protected TableView<productClass> tableOrder;
 
     @FXML
     TableColumn<productClass, Integer> id = new TableColumn<>("ID");
@@ -56,14 +56,12 @@ public class ordersController implements Initializable {
     ObservableList<productClass> orderList = FXCollections.observableArrayList();
 
     double total =0;
-    
-    private SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, 0);
 
     public void addList(){
         id.setCellValueFactory(new PropertyValueFactory<>("productID"));
         productName.setCellValueFactory(new PropertyValueFactory<>("productName"));
         quantityColumn.setCellValueFactory(new PropertyValueFactory<>("productQuantity"));
-        productListTable.get(productList.getSelectionModel().getSelectedIndex()).setProductQuantity((Integer) quantity.getValue());
+        productListTable.get(productList.getSelectionModel().getSelectedIndex()).setProductQuantity(quantity.getValue());
 //        productListTable.get(productList.getSelectionModel().getSelectedIndex()).productPrice.intValue();
         orderList.add(productListTable.get(productList.getSelectionModel().getSelectedIndex()));
         tableOrder.getItems().add(productListTable.get(productList.getSelectionModel().getSelectedIndex()));
@@ -72,14 +70,14 @@ public class ordersController implements Initializable {
 
     @FXML
     public void setQuantity() {
-        valueFactory=new SpinnerValueFactory.IntegerSpinnerValueFactory(1,quantityList.get(productList.getSelectionModel().getSelectedIndex()),0);
+        SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, quantityList.get(productList.getSelectionModel().getSelectedIndex()), 0);
         quantity.setValueFactory(valueFactory);
     }
 
     @FXML
     public void clear(){
         productList.setPromptText("Select a Product");
-        quantity.decrement((Integer) quantity.getValue()-1);
+        quantity.decrement(quantity.getValue() -1);
     }
 
     @FXML
@@ -90,7 +88,7 @@ public class ordersController implements Initializable {
 
     @FXML
     protected void placeOrder() {
-        String p = "";
+        String p;
 
         if (orderList.size()>1)
              p="Products";
@@ -99,8 +97,8 @@ public class ordersController implements Initializable {
 
          if(orderList.size()>0) {
              total=0;
-             for (int i = 0; i < orderList.size(); i++) {
-                 total += orderList.get(i).getProductQuantity() * orderList.get(i).getProductPrice();
+             for (babylinapp.productClass productClass : orderList) {
+                 total += productClass.getProductQuantity() * productClass.getProductPrice();
              }
              Controller.infoBox("Total Cost: GHC " + total, "Cost of " + p, "Order Number - 001");
          }
@@ -118,7 +116,7 @@ public class ordersController implements Initializable {
             PreparedStatement preparedStatement = connection.prepareStatement(jdbcController.UPDATE_QUERY_PRODUCTS_QUANTITY_SUB);
             preparedStatement.setInt(1,p);
             preparedStatement.setString(2,n);
-            Boolean resultSet = preparedStatement.execute();
+            boolean resultSet = preparedStatement.execute();
             if (resultSet)
                 Controller.showAlert(Alert.AlertType.INFORMATION,order.getScene().getWindow(),"Purchased Products","Thank for purchasing Bn Natural Foods products");
             else
@@ -132,7 +130,7 @@ public class ordersController implements Initializable {
 
     @FXML
     protected void delete(){
-        Integer rowInTable=tableOrder.getSelectionModel().getSelectedIndex();
+        int rowInTable=tableOrder.getSelectionModel().getSelectedIndex();
         if (total>0)
             total-=orderList.get(tableOrder.getSelectionModel().getSelectedIndex()).getProductQuantity()*orderList.get(tableOrder.getSelectionModel().getSelectedIndex()).getProductPrice();
 
