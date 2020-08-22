@@ -5,6 +5,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -55,14 +56,15 @@ public class AddRawMaterialsPageController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        addRawMaterialsQuantity.setValueFactory((new SpinnerValueFactory.IntegerSpinnerValueFactory(0,100)));
         try {
             Connection connection = DriverManager.getConnection(jdbcController.url, jdbcController.user, jdbcController.password);
-            PreparedStatement preparedStatement = connection.prepareStatement(jdbcController.SELECT_QUERY);
+            PreparedStatement preparedStatement = connection.prepareStatement(jdbcController.SELECT_QUERY_RAW);
 
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()){
-                addRawMaterialsComboBox.getItems().add(resultSet.getString("StockName"));
+                addRawMaterialsComboBox.getItems().add(resultSet.getString("rawMaterialName"));
             }
         }catch (SQLException e) {
             jdbcController.printSQLException(e);

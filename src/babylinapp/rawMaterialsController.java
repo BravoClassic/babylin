@@ -50,14 +50,14 @@ public class rawMaterialsController implements Initializable {
     protected void viewRawMaterials() throws SQLException {
 
         Connection connection = DriverManager.getConnection(jdbcController.url, jdbcController.user, jdbcController.password);
-        PreparedStatement preparedStatement = connection.prepareStatement(jdbcController.SELECT_QUERY_STOCK);
+        PreparedStatement preparedStatement = connection.prepareStatement(jdbcController.SELECT_QUERY_RAW);
 
         ResultSet resultSet = preparedStatement.executeQuery();
         while (resultSet.next()) {
-            String result = resultSet.getString("stockName");
+            String result = resultSet.getString("rawMaterialName");
             Integer result1=resultSet.getInt("quantity");
             Double result2= resultSet.getDouble("unitPrice");
-            String result3 = resultSet.getString("stockDescription");
+            String result3 = resultSet.getString("rawMaterialDescription");
             rawMaterialsList.add(new rawMaterialsClass(result, result1, result2, result3));
         }
         connection.close();

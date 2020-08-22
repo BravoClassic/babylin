@@ -11,10 +11,37 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.ResourceBundle;
 
 public class ordersController implements Initializable {
+
+    @FXML
+    protected TextField phone;
+
+    @FXML
+    protected TextField address;
+
+    @FXML
+    protected TextField email;
+
+    @FXML
+    protected ComboBox<String> customerName;
+
+    @FXML
+    protected TextField userNameLast;
+
+    @FXML
+    protected Button clearUserName;
+
+    @FXML
+    protected Button addUserName;
+
+    @FXML
+    protected TextField userNameFirst;
 
     @FXML
     protected ComboBox<String> productList;
@@ -56,17 +83,24 @@ public class ordersController implements Initializable {
     ObservableList<productClass> orderList = FXCollections.observableArrayList();
 
     double total =0;
+    Date timeDateOrder;
+    int userId;
+    String dtOrder;
+    int orderId;
 
-    public void addList(){
+    public void addList() {
         id.setCellValueFactory(new PropertyValueFactory<>("productID"));
         productName.setCellValueFactory(new PropertyValueFactory<>("productName"));
         quantityColumn.setCellValueFactory(new PropertyValueFactory<>("productQuantity"));
         productListTable.get(productList.getSelectionModel().getSelectedIndex()).setProductQuantity(quantity.getValue());
 //        productListTable.get(productList.getSelectionModel().getSelectedIndex()).productPrice.intValue();
-        orderList.add(productListTable.get(productList.getSelectionModel().getSelectedIndex()));
-        tableOrder.getItems().add(productListTable.get(productList.getSelectionModel().getSelectedIndex()));
+        if (orderList.contains(productListTable.get(productList.getSelectionModel().getSelectedIndex()))) {
+            Controller.infoBox("Your order already contains this product. Delete it and add it again if you want to change the quantity.", null, "Add same product Error");
+        } else {
+            orderList.add(productListTable.get(productList.getSelectionModel().getSelectedIndex()));
+            tableOrder.getItems().add(productListTable.get(productList.getSelectionModel().getSelectedIndex()));
+        }
     }
-
 
     @FXML
     public void setQuantity() {
@@ -86,21 +120,70 @@ public class ordersController implements Initializable {
         new Menu().start(stage);
     }
 
+
+    @FXML
+    protected void getUserID(){
+        try{
+            Connection connection=DriverManager.getConnection(jdbcController.url, jdbcController.user, jdbcController.password);
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT 'userId', 'firstName', 'lastName' FROM babylinapp_users");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()){
+                if(String.format("%s%s", resultSet.getString("firstName"), resultSet.getString("lastName")).equals(customerName.getValue()))
+                    userId= resultSet.getInt("userId");
+                else {
+                    Controller.infoBox("No user found!", null, "Error");
+                    userId= -1;
+                }
+            }
+
+        } catch (SQLException e) {
+            jdbcController.printSQLException(e);
+        }
+    }
+
     @FXML
     protected void placeOrder() {
-        String p;
-
-        if (orderList.size()>1)
-             p="Products";
-         else
-             p="Product";
 
          if(orderList.size()>0) {
              total=0;
+             try{
+
+                 //getUserID
+                 getUserID();
+                 if (userId != -1) {
+                     timeDateOrder = Date.from(Instant.now());
+                     SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                     dtOrder=ft.format(timeDateOrder);//Formatted date
+
+                     //Update babylinapp_orders first
+                     Connection connection = DriverManager.getConnection(jdbcController.url, jdbcController.user, jdbcController.password);
+                     PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO babylinapp_orders(OrderId,UserId,OrderAt) values(?,?,?)");
+                     preparedStatement.setString(1, null);
+                     preparedStatement.setInt(2, userId);
+                     preparedStatement.setString(3, dtOrder);
+
+                     boolean result = preparedStatement.execute();
+                     if (!result)
+                         System.out.println("Successful!");
+                     else
+                         System.out.println("Unsuccessful!");
+                 }
+                 //Select last order form babylinapp_orders and update babylinapp_products
+                 updateProductOrders();
+
+                 //Update Product Quantity
+                 for (babylinapp.productClass productClass : orderList) {
+                     placeOrderDB(productClass.getProductQuantity(), productClass.getProductName());
+                 }
+             } catch (SQLException e) {
+                 jdbcController.printSQLException(e);
+             }
              for (babylinapp.productClass productClass : orderList) {
                  total += productClass.getProductQuantity() * productClass.getProductPrice();
              }
-             Controller.infoBox("Total Cost: GHC " + total, "Cost of " + p, "Order Number - 001");
+             //using babylinapp_revenue
+             storeRevenue();
+             processOrder();
          }
          else {
              Controller.showAlert(Alert.AlertType.ERROR,order.getScene().getWindow(),"Error | Empty Cart", "Please select a product(s) to purchase");
@@ -110,20 +193,84 @@ public class ordersController implements Initializable {
 //        System.out.println(orderList.get(0).getProductPrice());
     }
 
-    protected void placeOrderDB(Integer p, String n){
+
+    //Get orderID
+
+    protected void processOrder(){
+        String p;
+
+        if (orderList.size()>1)
+            p="Products";
+        else
+            p="Product";
+        try {
+            Connection connection = DriverManager.getConnection(jdbcController.url,jdbcController.user,jdbcController.password);
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT OrderId FROM babylinapp_orders");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                if (resultSet.last())
+                    orderId = resultSet.getInt("OrderId");
+            }
+            Controller.infoBox("Total Cost: GHC " + total, "Cost of " + p, "Order Number - "+orderId);
+        } catch (SQLException e) {
+            jdbcController.printSQLException(e);
+        }
+    }
+
+    protected void storeRevenue(){
+        try{
+            Connection connection =DriverManager.getConnection(jdbcController.url,jdbcController.user,jdbcController.password);
+            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO babylinapp_revenue values(?,?,?)");
+            preparedStatement.setString(1,null);
+            preparedStatement.setDouble(2,total);
+            preparedStatement.setString(3, dtOrder);
+            boolean result = preparedStatement.execute();
+            if (!result) System.out.println("Worked");
+            else System.out.println("Falied!");
+        } catch (SQLException e) {
+            jdbcController.printSQLException(e);
+        }
+    }
+
+    protected void updateProductOrders(){
+        try{
+            Connection connection = DriverManager.getConnection(jdbcController.url, jdbcController.user, jdbcController.password);
+            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO babylinapp_product_orders values(?,?,?,?)");
+            //noinspection ForLoopReplaceableByForEach
+            for (int val=0; val<orderList.size();val++){
+                preparedStatement.setString(1,null);
+                preparedStatement.setInt(2,orderList.get(val).getProductID());
+                preparedStatement.setInt(3,userId);
+                preparedStatement.setInt(4,orderList.get(val).getProductQuantity());
+                boolean resultSet = preparedStatement.execute();
+                if (!resultSet){
+                    System.out.println("Worked");
+                }else {
+                    System.out.println("Not worked");
+                }
+            }
+        } catch (SQLException e) {
+            jdbcController.printSQLException(e);
+        }
+    }
+
+
+    protected void placeOrderDB(Integer q, String n){//Update Product Quantity
         try {
             Connection connection = DriverManager.getConnection(jdbcController.url,jdbcController.user,jdbcController.password);
             PreparedStatement preparedStatement = connection.prepareStatement(jdbcController.UPDATE_QUERY_PRODUCTS_QUANTITY_SUB);
-            preparedStatement.setInt(1,p);
-            preparedStatement.setString(2,n);
+            preparedStatement.setInt(1,q);//Product Quantity
+            preparedStatement.setString(2,n);//Product Name
             boolean resultSet = preparedStatement.execute();
-            if (resultSet)
-                Controller.showAlert(Alert.AlertType.INFORMATION,order.getScene().getWindow(),"Purchased Products","Thank for purchasing Bn Natural Foods products");
+            if (!resultSet)
+                System.out.println("Working");
+//                Controller.showAlert(Alert.AlertType.INFORMATION,order.getScene().getWindow(),"Purchased Products","Thank for purchasing Bn Natural Foods products");
             else
-                Controller.showAlert(Alert.AlertType.ERROR,order.getScene().getWindow(),"Error Purchasing Products","There was an error purchasing Bn Natural Foods products");
+            System.out.println("Not working");
+//                Controller.showAlert(Alert.AlertType.ERROR,order.getScene().getWindow(),"Error Purchasing Products","There was an error purchasing Bn Natural Foods products");
             connection.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            jdbcController.printSQLException(e);
         }
     }
 
@@ -142,7 +289,42 @@ public class ordersController implements Initializable {
 //        System.out.println(orderList.get(tableOrder.getSelectionModel().getSelectedIndex()).getProductQuantity());
     }
 
-    @Override
+
+    @FXML
+    protected void addUser() {
+        try {
+            Connection connection = DriverManager.getConnection(jdbcController.url, jdbcController.user, jdbcController.password);
+            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO babylinapp_users values(?,?,?,?,?,?)");
+            preparedStatement.setString(1,null);
+            preparedStatement.setString(2,userNameFirst.getText());
+            preparedStatement.setString(3,userNameLast.getText());
+            preparedStatement.setString(4,email.getText());
+            preparedStatement.setString(5,address.getText());
+            preparedStatement.setString(6,phone.getText());
+
+            boolean resultSet = preparedStatement.execute();
+            if(!resultSet){
+                Controller.infoBox("Added New User!",null,"New User");
+            }else {
+                Controller.infoBox("Error did not add new user!",null,"Error New User");
+            }
+
+        } catch (SQLException e) {
+            jdbcController.printSQLException(e);
+        }
+    }
+
+
+    @FXML
+    protected void clearUser(){
+         userNameFirst.clear();
+         userNameLast.clear();
+         email.clear();
+         address.clear();
+         phone.clear();
+    }
+
+        @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
             Connection connection = DriverManager.getConnection(jdbcController.url, jdbcController.user, jdbcController.password);
@@ -159,6 +341,11 @@ public class ordersController implements Initializable {
                         resultSet.getDouble("unitPrice"),
                         resultSet.getString("productDescription")
                 )));
+            }
+            preparedStatement =connection.prepareStatement("SELECT * FROM babylinapp_users");
+            resultSet =preparedStatement.executeQuery();
+            while (resultSet.next()){
+                customerName.getItems().add(resultSet.getString("firstName")+" "+resultSet.getString("lastName"));
             }
             connection.close();
         } catch (SQLException e) {

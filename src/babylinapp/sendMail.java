@@ -1,5 +1,8 @@
 package babylinapp;
 
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
@@ -28,8 +31,8 @@ public class sendMail {
             multipart.addBodyPart(messageBodyPart);
             messageBodyPart = new MimeBodyPart();
             String fileName=CustomerName+":receipt"+orderNumber+".pdf";
-//            DataSource source= new FileDataSource(fileName);
-//            messageBodyPart.setDataHandler(new DataHandler(source));
+            DataSource source= new FileDataSource(fileName);
+            messageBodyPart.setDataHandler(new DataHandler(source));
             messageBodyPart.setFileName(fileName);
             multipart.addBodyPart(messageBodyPart);
             message.setContent(multipart);
