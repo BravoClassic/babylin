@@ -11,6 +11,6 @@ public class DeleteRawMaterialsPageController {
 
     @FXML
     protected void cancel(){
-        System.out.println("Hello!");
+
     }
 }

@@ -19,6 +19,7 @@ public class UpdateRawMaterialsController implements Initializable {
     public TextField rawMaterialsQuantity;
     public TextArea rawMaterialsDescription;
     public TextField rawMaterialsName;
+    public TextField rawMaterialId;
 
     @FXML
     private ComboBox<String> rawMaterialsList;
@@ -33,11 +34,12 @@ public class UpdateRawMaterialsController implements Initializable {
     protected void update() throws SQLException {
         Connection connection = DriverManager.getConnection(jdbcController.url,jdbcController.user,jdbcController.password);
         PreparedStatement preparedStatement = connection.prepareStatement(jdbcController.UPDATE_QUERY_RAW);
-        preparedStatement.setString(1,null);
+        preparedStatement.setInt(1,Integer.parseInt(rawMaterialId.getText()));
         preparedStatement.setString(2,rawMaterialsName.getText());
         preparedStatement.setDouble(3,Double.parseDouble(rawMaterialsUnitPrice.getText()));
         preparedStatement.setInt(4,Integer.parseInt(rawMaterialsQuantity.getText()));
         preparedStatement.setString(5,rawMaterialsDescription.getText());
+        preparedStatement.setString(6,rawMaterialsList.getValue());
         int resultSet = preparedStatement.executeUpdate();
 
         if (resultSet==1){
@@ -55,6 +57,7 @@ public class UpdateRawMaterialsController implements Initializable {
             preparedStatement.setString(1,rawMaterialsList.getValue());
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
+                rawMaterialId.setText(resultSet.getString(1));
                 rawMaterialsName.setText(resultSet.getString(2));
                 rawMaterialsUnitPrice.setText(resultSet.getString(3));
                 rawMaterialsQuantity.setText(resultSet.getString(4));
