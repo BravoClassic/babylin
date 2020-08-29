@@ -30,11 +30,16 @@ public class UpdateProductPageController implements Initializable {
     @FXML
     protected void update() throws SQLException {
         Connection connection = DriverManager.getConnection(jdbcController.url,jdbcController.user,jdbcController.password);
-        PreparedStatement preparedStatement = connection.prepareStatement(jdbcController.UPDATE_QUERY_PRODUCTS_QUANTITY);
-        preparedStatement.setString(1,productList.getValue());
-        boolean resultSet = preparedStatement.execute();
+        PreparedStatement preparedStatement = connection.prepareStatement(jdbcController.UPDATE_QUERY_PRODUCTS_ALL);
+        preparedStatement.setString(1,null);
+        preparedStatement.setString(2,productName.getText());
+        preparedStatement.setInt(3,Integer.parseInt(productUnitPrice.getText()));
+        preparedStatement.setInt(4,Integer.parseInt(productQuantity.getText()));
+        preparedStatement.setString(5,productDescription.getText());
+        preparedStatement.setString(6,productList.getValue());
+        int resultSet = preparedStatement.executeUpdate();
 
-        if (resultSet){
+        if (resultSet==1){
             Controller.infoBox("Successfully updated "+productList.getValue(),null,"Success");
         }else {
             Controller.infoBox("Failed to update "+productList.getValue(),null,"Failed!");
@@ -43,26 +48,22 @@ public class UpdateProductPageController implements Initializable {
 
     @FXML
     protected void display(){
-        String pN = productList.getValue();//Product Name
-        int pQ=0; //Get Quantity
-        int pP=0;//Get unit price
-        String pD="";//Get product Description
 
         try {
             Connection connection = DriverManager.getConnection(jdbcController.url,jdbcController.user,jdbcController.password);
             PreparedStatement preparedStatement = connection.prepareStatement(jdbcController.SELECT_QUERY_PRODUCTS_ADD);
-            preparedStatement.setString(1,pN);
+            preparedStatement.setString(1,productList.getValue());
             ResultSet resultSet = preparedStatement.executeQuery();
-            pQ=resultSet.getInt("quantity");
-            pP=resultSet.getInt("unitPrice");
-            pD=resultSet.getString("productDescription");
+            while (resultSet.next()) {
+                productName.setText(productList.getValue());
+                productQuantity.setText(Integer.toString(resultSet.getInt("quantity")));
+                productUnitPrice.setText(Integer.toString(resultSet.getInt("unitPrice")));
+                productDescription.setText(resultSet.getString("productDescription"));
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        productName.setText(pN);
-        productQuantity.setText(Integer.toString(pQ));
-        productUnitPrice.setText(Integer.toString(pP));
-        productDescription.setText(pD);
+
     }
 
 
@@ -73,7 +74,7 @@ public class UpdateProductPageController implements Initializable {
         productUnitPrice.setText("");
         productDescription.setText("");
         Stage stage = (Stage) cancel.getScene().getWindow();
-        new rawMaterials().start(stage);
+        new products().start(stage);
     }
     @FXML
     protected void viewProduct() throws SQLException {

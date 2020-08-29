@@ -36,7 +36,7 @@ public class NewRawMaterialsPageController {
         try {
             Connection connection = DriverManager.getConnection(jdbcController.url, jdbcController.user, jdbcController.password);
             PreparedStatement preparedStatement = connection.prepareStatement(jdbcController.INSERT_QUERY_STOCK);
-            preparedStatement.setString(1,null);
+            preparedStatement.setString(1, null);
             preparedStatement.setString(2,newRawMaterialNamePage.getText());
             preparedStatement.setDouble(3,Double.parseDouble(newRawMaterialsPricePage.getText()));
             preparedStatement.setInt(4, Integer.parseInt(newRawMaterialsQuantityPage.getText()));

@@ -41,7 +41,7 @@ public class ordersController implements Initializable {
     protected Button addUserName;
 
     @FXML
-    protected TextField userNameFirst;
+    protected TextField userNameFull;
 
     @FXML
     protected ComboBox<String> productList;
@@ -82,9 +82,10 @@ public class ordersController implements Initializable {
 
     ObservableList<productClass> orderList = FXCollections.observableArrayList();
 
+    ObservableList<String> userList = FXCollections.observableArrayList();
+
     double total =0;
     Date timeDateOrder;
-    int userId;
     String dtOrder;
     int orderId;
 
@@ -122,16 +123,34 @@ public class ordersController implements Initializable {
 
 
     @FXML
-    protected void getUserID(){
+    protected void clearOrderSheet(){
+        if(productListTable.isEmpty() && orderList.isEmpty()) {
+            System.out.println("Both empty freaking table and list!");
+        }
+        else{
+            tableOrder.getItems().clear();
+            orderList.clear();
+        }
+    }
+
+    @FXML
+    protected int getUserID(){
+        int userId=0;
         try{
             Connection connection=DriverManager.getConnection(jdbcController.url, jdbcController.user, jdbcController.password);
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT 'userId', 'firstName', 'lastName' FROM babylinapp_users");
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM babylinapp_users");
+//            preparedStatement.setString(1,customerName.getSelectionModel().getSelectedItem());
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()){
-                if(String.format("%s%s", resultSet.getString("firstName"), resultSet.getString("lastName")).equals(customerName.getValue()))
-                    userId= resultSet.getInt("userId");
+                String name=resultSet.getString("userName");
+                System.out.println(name);
+                if(name.equals(customerName.getValue())) {
+                    userId = resultSet.getInt("userId");
+                    break;
+                }
                 else {
-                    Controller.infoBox("No user found!", null, "Error");
+//                    Controller.infoBox("No user found!", null, "Error");
+                    System.out.println("Error!");
                     userId= -1;
                 }
             }
@@ -139,22 +158,21 @@ public class ordersController implements Initializable {
         } catch (SQLException e) {
             jdbcController.printSQLException(e);
         }
+        System.out.println(userId);
+        return userId;
     }
 
     @FXML
     protected void placeOrder() {
-
          if(orderList.size()>0) {
              total=0;
              try{
-
+                 int userId=getUserID();
                  //getUserID
-                 getUserID();
                  if (userId != -1) {
                      timeDateOrder = Date.from(Instant.now());
                      SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
                      dtOrder=ft.format(timeDateOrder);//Formatted date
-
                      //Update babylinapp_orders first
                      Connection connection = DriverManager.getConnection(jdbcController.url, jdbcController.user, jdbcController.password);
                      PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO babylinapp_orders(OrderId,UserId,OrderAt) values(?,?,?)");
@@ -220,10 +238,11 @@ public class ordersController implements Initializable {
     protected void storeRevenue(){
         try{
             Connection connection =DriverManager.getConnection(jdbcController.url,jdbcController.user,jdbcController.password);
-            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO babylinapp_revenue values(?,?,?)");
+            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO babylinapp_revenue values(?,?,?,?)");
             preparedStatement.setString(1,null);
-            preparedStatement.setDouble(2,total);
-            preparedStatement.setString(3, dtOrder);
+            preparedStatement.setInt(2,returnOrderId());
+            preparedStatement.setDouble(3,total);
+            preparedStatement.setString(4, dtOrder);
             boolean result = preparedStatement.execute();
             if (!result) System.out.println("Worked");
             else System.out.println("Falied!");
@@ -233,14 +252,15 @@ public class ordersController implements Initializable {
     }
 
     protected void updateProductOrders(){
+        int orderId1=returnOrderId();
         try{
             Connection connection = DriverManager.getConnection(jdbcController.url, jdbcController.user, jdbcController.password);
             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO babylinapp_product_orders values(?,?,?,?)");
             //noinspection ForLoopReplaceableByForEach
             for (int val=0; val<orderList.size();val++){
                 preparedStatement.setString(1,null);
-                preparedStatement.setInt(2,orderList.get(val).getProductID());
-                preparedStatement.setInt(3,userId);
+                preparedStatement.setInt(2,orderId1);
+                preparedStatement.setInt(3,orderList.get(val).getProductID());
                 preparedStatement.setInt(4,orderList.get(val).getProductQuantity());
                 boolean resultSet = preparedStatement.execute();
                 if (!resultSet){
@@ -254,6 +274,24 @@ public class ordersController implements Initializable {
         }
     }
 
+    protected int returnOrderId(){
+        int OrderId1=0;
+        try {
+            Connection connection = DriverManager.getConnection(jdbcController.url,jdbcController.user,jdbcController.password);
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM babylinapp_orders");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                if (resultSet.last())
+                    OrderId1=resultSet.getInt(1);
+            }
+            connection.close();
+        } catch (SQLException e) {
+            jdbcController.printSQLException(e);
+        }
+        System.out.println("Here");
+        System.out.println(OrderId1);
+        return OrderId1;
+    }
 
     protected void placeOrderDB(Integer q, String n){//Update Product Quantity
         try {
@@ -296,7 +334,7 @@ public class ordersController implements Initializable {
             Connection connection = DriverManager.getConnection(jdbcController.url, jdbcController.user, jdbcController.password);
             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO babylinapp_users values(?,?,?,?,?,?)");
             preparedStatement.setString(1,null);
-            preparedStatement.setString(2,userNameFirst.getText());
+            preparedStatement.setString(2, userNameFull.getText());
             preparedStatement.setString(3,userNameLast.getText());
             preparedStatement.setString(4,email.getText());
             preparedStatement.setString(5,address.getText());
@@ -304,6 +342,7 @@ public class ordersController implements Initializable {
 
             boolean resultSet = preparedStatement.execute();
             if(!resultSet){
+                customerName.getItems().add(userNameFull.getText()+userNameLast.getText());
                 Controller.infoBox("Added New User!",null,"New User");
             }else {
                 Controller.infoBox("Error did not add new user!",null,"Error New User");
@@ -317,7 +356,7 @@ public class ordersController implements Initializable {
 
     @FXML
     protected void clearUser(){
-         userNameFirst.clear();
+         userNameFull.clear();
          userNameLast.clear();
          email.clear();
          address.clear();
@@ -345,9 +384,10 @@ public class ordersController implements Initializable {
             preparedStatement =connection.prepareStatement("SELECT * FROM babylinapp_users");
             resultSet =preparedStatement.executeQuery();
             while (resultSet.next()){
-                customerName.getItems().add(resultSet.getString("firstName")+" "+resultSet.getString("lastName"));
+                userList.add(resultSet.getString("userName"));
             }
             connection.close();
+            customerName.getItems().addAll(userList);
         } catch (SQLException e) {
             e.printStackTrace();
         }
