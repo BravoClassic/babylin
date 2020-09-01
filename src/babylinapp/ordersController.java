@@ -7,15 +7,27 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
+import javax.mail.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class ordersController implements Initializable {
 
@@ -212,7 +224,6 @@ public class ordersController implements Initializable {
     }
 
 
-    //Get orderID
 
     protected void processOrder(){
         String p;
@@ -223,13 +234,14 @@ public class ordersController implements Initializable {
             p="Product";
         try {
             Connection connection = DriverManager.getConnection(jdbcController.url,jdbcController.user,jdbcController.password);
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT OrderId FROM babylinapp_orders");
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT OrderId FROM babylinapp_orders WHERE OrderId=?");
+            preparedStatement.setInt(1,returnOrderId());
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
-                if (resultSet.last())
                     orderId = resultSet.getInt("OrderId");
             }
-            Controller.infoBox("Total Cost: GHC " + total, "Cost of " + p, "Order Number - "+orderId);
+            Controller.infoBox("Total Cost: GHC " + total, "Cost of " + p, "Order Number - BC"+orderId);
+            createPDF("BC"+orderId,customerName.getSelectionModel().getSelectedItem());
         } catch (SQLException e) {
             jdbcController.printSQLException(e);
         }
@@ -252,14 +264,14 @@ public class ordersController implements Initializable {
     }
 
     protected void updateProductOrders(){
-        int orderId1=returnOrderId();
+        orderId=returnOrderId();
         try{
             Connection connection = DriverManager.getConnection(jdbcController.url, jdbcController.user, jdbcController.password);
             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO babylinapp_product_orders values(?,?,?,?)");
             //noinspection ForLoopReplaceableByForEach
             for (int val=0; val<orderList.size();val++){
                 preparedStatement.setString(1,null);
-                preparedStatement.setInt(2,orderId1);
+                preparedStatement.setInt(2,orderId);
                 preparedStatement.setInt(3,orderList.get(val).getProductID());
                 preparedStatement.setInt(4,orderList.get(val).getProductQuantity());
                 boolean resultSet = preparedStatement.execute();
@@ -288,7 +300,6 @@ public class ordersController implements Initializable {
         } catch (SQLException e) {
             jdbcController.printSQLException(e);
         }
-        System.out.println("Here");
         System.out.println(OrderId1);
         return OrderId1;
     }
@@ -332,17 +343,16 @@ public class ordersController implements Initializable {
     protected void addUser() {
         try {
             Connection connection = DriverManager.getConnection(jdbcController.url, jdbcController.user, jdbcController.password);
-            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO babylinapp_users values(?,?,?,?,?,?)");
+            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO babylinapp_users values(?,?,?,?,?)");
             preparedStatement.setString(1,null);
             preparedStatement.setString(2, userNameFull.getText());
-            preparedStatement.setString(3,userNameLast.getText());
-            preparedStatement.setString(4,email.getText());
-            preparedStatement.setString(5,address.getText());
-            preparedStatement.setString(6,phone.getText());
+            preparedStatement.setString(3,email.getText());
+            preparedStatement.setString(4,address.getText());
+            preparedStatement.setString(5,phone.getText());
 
             boolean resultSet = preparedStatement.execute();
             if(!resultSet){
-                customerName.getItems().add(userNameFull.getText()+userNameLast.getText());
+                customerName.getItems().add(userNameFull.getText());
                 Controller.infoBox("Added New User!",null,"New User");
             }else {
                 Controller.infoBox("Error did not add new user!",null,"Error New User");
@@ -363,6 +373,108 @@ public class ordersController implements Initializable {
          phone.clear();
     }
 
+    public void createPDF(String pdfName, String customerName) {
+        String path = System.getProperty("user.dir");
+        String fileName=path+"\\src\\babylinapp\\pdfs\\"+customerName+"-"+pdfName+".pdf";
+        System.out.println(fileName);
+        PDDocument pdDocument = new PDDocument();
+        PDPage pdPage = new PDPage();
+        try {
+            pdDocument.getDocumentInformation().setTitle("Babylin Consult Receipt - "+customerName);
+            pdDocument.getDocumentInformation().setAuthor("Babylin Consult");
+            pdDocument.getDocumentInformation().setCreator("Babylin Consult Stock Management App - PDFBox API");
+            pdDocument.getDocumentInformation().setSubject("Receipt");
+            Calendar date = new GregorianCalendar();
+            date.setTime(Date.from(Instant.now()));
+            pdDocument.getDocumentInformation().setCreationDate(date);
+            pdDocument.getDocumentInformation().setModificationDate(date);
+            pdDocument.getDocumentInformation().setKeywords("receipt, invoice");
+            pdDocument.addPage(pdPage);
+            pdDocument.save(fileName);
+            System.out.println("Document Created!"+pdDocument.getNumberOfPages());
+            pdDocument.close();
+            insertContent(fileName);
+        } catch (IOException e) {
+            jdbcController.printIOExpection(e);
+        }
+    }
+    protected void insertContent(String pathname){
+        File file = new File(pathname);
+        try {
+            PDDocument document = PDDocument.load(file);
+            System.out.println(document.getNumberOfPages());
+            PDPage pdPage = document.getPages().get(0);
+            PDPageContentStream pdPageContentStream = new PDPageContentStream(document, pdPage);
+            pdPageContentStream.beginText();
+            pdPageContentStream.setFont(PDType1Font.TIMES_ROMAN,20);
+            pdPageContentStream.setLeading(14.5f);
+            pdPageContentStream.newLineAtOffset(25, 725);
+            pdPageContentStream.showText("Products Purchased");
+            for (babylinapp.productClass productClass : orderList) {
+                String text1 = "" + productClass.getProductName() + "-" + productClass.getProductPrice() * productClass.getProductQuantity();
+                pdPageContentStream.newLine();
+                pdPageContentStream.showText(text1);
+            }
+            pdPageContentStream.newLine();
+            pdPageContentStream.showText("Total: "+total);
+            pdPageContentStream.endText();
+            pdPageContentStream.close();
+            document.save(file);
+            document.close();
+            sendReceipt(getEmail(),customerName.getSelectionModel().getSelectedItem(),orderId);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected String getEmail(){
+        String email="";
+        try {
+            Connection connection = DriverManager.getConnection(jdbcController.url,jdbcController.user,jdbcController.password);
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM babylinapp_users WHERE userName=?");
+            preparedStatement.setString(1,customerName.getSelectionModel().getSelectedItem());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                    email=resultSet.getString("email");
+            }
+            connection.close();
+        } catch (SQLException e) {
+            jdbcController.printSQLException(e);
+        }
+        System.out.println(email);
+        return email;
+    }
+
+    protected void sendReceipt(String email,String CustomerName, Integer orderId) {
+        String from ="babylinnaturalhairfoods@gmail.com";
+        String host="localhost";
+        Properties properties = System.getProperties();
+        properties.setProperty("mail.stmp.host", host);
+        Session session = Session.getDefaultInstance(properties);
+
+        try {
+            MimeMessage message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(from));
+            message.addRecipient(Message.RecipientType.TO,new InternetAddress(email));
+            message.setSubject("Purchase Order:");
+            BodyPart messageBodyPart = new MimeBodyPart();
+            messageBodyPart.setText("Your receipt bro");
+            Multipart multipart = new MimeMultipart();
+            multipart.addBodyPart(messageBodyPart);
+            messageBodyPart = new MimeBodyPart();
+            String fileName=CustomerName+"-BC"+orderId+".pdf";
+            DataSource source= new FileDataSource(fileName);
+            messageBodyPart.setDataHandler(new DataHandler(source));
+            messageBodyPart.setFileName(fileName);
+            multipart.addBodyPart(messageBodyPart);
+            message.setContent(multipart);
+            Transport.send(message);
+            Controller.infoBox("Sent receipt via Email!",null,"Purchase Successful!");
+        } catch (MessagingException e) {
+            Controller.infoBox("Receipt not sent!",null,"Error");
+            jdbcController.printMessagingException(e);
+        }
+    }
         @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {

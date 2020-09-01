@@ -5,9 +5,9 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -16,12 +16,26 @@ import java.sql.*;
 import java.util.ResourceBundle;
 
 public class rawMaterialsController implements Initializable {
+    @FXML
+     Label rawPrice;
 
     @FXML
-    TableView<rawMaterialsClass> table;
+    Label rawQuantity;
 
     @FXML
-    TableColumn<rawMaterialsClass, String> columnRawMaterials;
+    TextArea rawDesc;
+
+    @FXML
+    Label rawName;
+
+    @FXML
+    ComboBox<String> comboRawName;
+
+//    @FXML
+//    TableView<rawMaterialsClass> table;
+
+//    @FXML
+//    TableColumn<rawMaterialsClass, String> columnRawMaterials;
 
     @FXML
     Button back;
@@ -46,6 +60,13 @@ public class rawMaterialsController implements Initializable {
 
     ObservableList<rawMaterialsClass> rawMaterialsList = FXCollections.observableArrayList();
 
+    @FXML
+    protected void displayMaterial(){
+        rawName.setText("Name: "+rawMaterialsList.get(comboRawName.getSelectionModel().getSelectedIndex()).getRawMaterialsName());
+        rawPrice.setText("Unit Price: "+rawMaterialsList.get(comboRawName.getSelectionModel().getSelectedIndex()).getRawMaterialsPrice());
+        rawQuantity.setText("Quantity Available: "+rawMaterialsList.get(comboRawName.getSelectionModel().getSelectedIndex()).getRawMaterialsQuantity());
+        rawDesc.setText(rawMaterialsList.get(comboRawName.getSelectionModel().getSelectedIndex()).getRawMaterialsDescription());
+    }
 
     protected void viewRawMaterials() throws SQLException {
 
@@ -96,8 +117,8 @@ public class rawMaterialsController implements Initializable {
             e.printStackTrace();
         }
 
-        columnRawMaterials.setCellValueFactory(new PropertyValueFactory<>("rawMaterialsName"));
-        table.setItems(rawMaterialsList);
+//        columnRawMaterials.setCellValueFactory(new PropertyValueFactory<>("rawMaterialsName"));
+//        table.setItems(rawMaterialsList);
 //        System.out.println(table.getSelectionModel().getSelectedItem().getProductName());
     }
 }
