@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/10.0.2-internal"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="babylinapp.rawMaterialsController">
+   <HBox prefHeight="400.0" prefWidth="247.0">
+      <AnchorPane prefHeight="400.0" prefWidth="247.0">
+<!--         <TableView fx:id="table" prefHeight="407.0" prefWidth="247.0">-->
+<!--            <columns>-->
+<!--               <TableColumn fx:id="columnRawMaterials" prefWidth="246.0" text="Raw Materials"/>-->
+<!--            </columns>-->
+<!--         </TableView>-->
+         <ComboBox fx:id="comboRawName" layoutX="70.0" layoutY="150.0" onAction="#displayMaterial" prefWidth="150.0" promptText="Select Raw Material" />
+      </AnchorPane>
+   </HBox>
+   <HBox layoutX="254.0" prefHeight="400.0" prefWidth="417.0">
+      <AnchorPane prefHeight="400.0" prefWidth="417.0">
+         <ImageView fitHeight="113.0" fitWidth="161.0" layoutX="14.0" layoutY="27.0" pickOnBounds="true"
+                    preserveRatio="true">
+            <Image url="@assets/black.jpg"/>
+         </ImageView>
+         <Label layoutX="195.0" layoutY="51.0" text="Name: Shea Butter" fx:id="rawName"/>
+         <Label layoutX="196.0" layoutY="72.0" text="Unite Price: GHC 1.00" fx:id="rawPrice"/>
+         <Label layoutX="197.0" layoutY="97.0" text="Quantity Available: 20 balls" fx:id="rawQuantity"/>
+         <Label layoutX="14.0" layoutY="139.0" text="Description:"/>
+         <TextArea disable="true" fx:id="rawDesc" layoutX="14.0" layoutY="163.0" prefHeight="163.0" prefWidth="357.0"
+                   text="Lorem ipsum it dolor sit dit be leike. Lisek the lorem ipsum dor lor to er ite."
+                   wrapText="true"/>
+         <Button fx:id="next" layoutX="176.0" layoutY="346.0" mnemonicParsing="false" prefHeight="25.0"
+                 prefWidth="66.0" text="Next"/>
+         <Button fx:id="previous" layoutX="95.0" layoutY="346.0" mnemonicParsing="false" prefHeight="25.0"
+                 prefWidth="66.0" text="Previous"/>
+         <Button fx:id="back" layoutX="261.0" layoutY="346.0" mnemonicParsing="false" onAction="#goBack"
+                 prefHeight="25.0" prefWidth="66.0" text="Back"/>
+      </AnchorPane>
+   </HBox>
+   <HBox layoutX="660.0" prefHeight="400.0" prefWidth="190.0">
+      <AnchorPane prefHeight="200.0" prefWidth="200.0">
+         <Button fx:id="newBtn" layoutX="62.0" layoutY="42.0" mnemonicParsing="false" onAction="#newRawMaterials"
+                 prefHeight="25.0" prefWidth="66.0" text="New"/>
+         <Button fx:id="add" layoutX="62.0" layoutY="88.0" mnemonicParsing="false" onAction="#addRawMaterials"
+                 prefHeight="25.0" prefWidth="66.0" text="Add"/>
+         <Button fx:id="update" layoutX="62.0" layoutY="137.0" mnemonicParsing="false"
+                 onAction="#updateRawMaterials" prefHeight="25.0" prefWidth="66.0" text="Update"/>
+         <Button fx:id="delete" layoutX="62.0" layoutY="188.0" mnemonicParsing="false"
+                 onAction="#deleteRawMaterials" prefHeight="25.0" prefWidth="66.0" text="Delete"/>
+      </AnchorPane>
+   </HBox>
+</AnchorPane>
