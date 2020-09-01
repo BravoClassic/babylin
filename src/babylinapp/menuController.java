@@ -13,6 +13,7 @@ import java.util.ResourceBundle;
 
 public class menuController implements Initializable {
 
+    public Button appointment;
     @FXML
     private Label welcome;
 
@@ -83,8 +84,8 @@ public class menuController implements Initializable {
                 PreparedStatement preparedStatement = connection.prepareStatement(jdbcController.SELECT_QUERY_EMAIL);
                 preparedStatement.setString(1,jdbcController.emailUniversal);
                 ResultSet resultSet = preparedStatement.executeQuery();
-                while (resultSet.next()) {
-                    welcome.setText("Welcome, " +resultSet.getString("userName")+"!");
+                if (resultSet.next()) {
+                    welcome.setText("Welcome, " +resultSet.getString("firstName")+"!");
                 }
             }
         } catch (SQLException e) {

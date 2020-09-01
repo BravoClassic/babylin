@@ -19,6 +19,7 @@
             </Label>
          <Button fx:id="settings" layoutX="500.0" layoutY="22.0" mnemonicParsing="false" text="Settings" />
          <Label fx:id="welcome" layoutX="46.0" layoutY="26.0" text="Welcome" />
+         <Button fx:id="appointment" layoutX="241.0" layoutY="188.0" mnemonicParsing="false" text="Appointments" />
         </AnchorPane>
     </Pane>
 </AnchorPane>

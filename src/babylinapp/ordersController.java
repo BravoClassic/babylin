@@ -477,6 +477,7 @@ public class ordersController implements Initializable {
     }
         @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        if(jdbcController.userType.equals("Employee")){
         try {
             Connection connection = DriverManager.getConnection(jdbcController.url, jdbcController.user, jdbcController.password);
             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM babylinapp_products");
@@ -501,7 +502,24 @@ public class ordersController implements Initializable {
             connection.close();
             customerName.getItems().addAll(userList);
         } catch (SQLException e) {
-            e.printStackTrace();
+            jdbcController.printSQLException(e);
         }
+    }
+        else if(jdbcController.userType.equals("Customer")){
+            try {
+                Connection connection = DriverManager.getConnection(jdbcController.url, jdbcController.user, jdbcController.password);
+                PreparedStatement preparedStatement =connection.prepareStatement("SELECT * FROM babylinapp_users WHERE email=?");
+                preparedStatement.setString(1,jdbcController.emailUniversal);
+                ResultSet resultSet =preparedStatement.executeQuery();
+                while (resultSet.next()){
+                    userList.add(resultSet.getString("userName"));
+                }
+                connection.close();
+                customerName.getItems().addAll(userList);
+            } catch (SQLException e) {
+                jdbcController.printSQLException(e);
+            }
+        }
+
     }
 }

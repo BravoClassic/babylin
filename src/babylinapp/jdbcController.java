@@ -104,7 +104,7 @@ public class jdbcController {
     //2.fn: fullname
     //4.u_type: user type
     //5.pwd & pwd2: First Password entered and Second Password entered
-    public boolean register(String fn, String DOB, String u_type, String address, String phone, String email, String pwd, String pwd2) {// The registration function
+    public boolean register(String fn, String ln, String DOB, String u_type, String address, String phone, String email, String pwd, String pwd2) {// The registration function
 
         boolean pwdValidate = true;
         String hashpwd1 = getMd5(pwd);// used a hash function to encrypt the passwords before storing them.
@@ -116,7 +116,7 @@ public class jdbcController {
                     PreparedStatement preparedStatement = connection.prepareStatement(SELECT_CUST_QUERY_)
 
             ) {
-                preparedStatement.setString(1,fn);
+                preparedStatement.setString(1,fn+" "+ln);
                 preparedStatement.setString(2,email);
                 ResultSet resultSet = preparedStatement.executeQuery();
                 System.out.println(resultSet.getFetchSize());
@@ -155,16 +155,17 @@ public class jdbcController {
             ) {
                 preparedStatement.setString(1, null);
                 preparedStatement.setString(2, fn);
-                preparedStatement.setString(3, email);
-                preparedStatement.setString(5, address);
-                preparedStatement.setString(6, phone);
-                preparedStatement.setString(7, DOB);
+                preparedStatement.setString(3, ln);
+                preparedStatement.setString(4, DOB);
+                preparedStatement.setString(5, email);
+                preparedStatement.setString(7, address);
+                preparedStatement.setString(8, phone);
                 if (hashpwd1.equals(hasdpwd2)) {//User enters password twice and it is verified if they are equal
-                    preparedStatement.setString(4, hashpwd1);//Replaces the question mark ? in the INSERT_QUERY
+                    preparedStatement.setString(6, hashpwd1);//Replaces the question mark ? in the INSERT_QUERY
                     System.out.println("Result:" + preparedStatement);
                     boolean resultSet = preparedStatement.execute();//Here the method execute returns a boolean value
                     connection.close();
-                    if (resultSet) {
+                    if (!resultSet) {
                         // This is used to valid that the process worked. Hence at the end of the function I use a if statement to enable the function return true or false
                         System.out.println("Worked");
                         userType="Employee";

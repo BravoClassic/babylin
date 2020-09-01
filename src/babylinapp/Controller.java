@@ -143,7 +143,7 @@ public class Controller {
             return;
         }
         jdbcController jdbcController = new jdbcController();
-        boolean flag=jdbcController.register(fn,dob,us_type,addr,phone,email,pwd,pwd1);
+        boolean flag=jdbcController.register(fn,ln,dob,us_type,addr,phone,email,pwd,pwd1);
 
         if (!flag) {
             infoBox("Please there is an error", null, "Failed");
