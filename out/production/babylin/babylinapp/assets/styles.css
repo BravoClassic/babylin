@@ -1,0 +1,9 @@
+.root{
+-fx-font-family:"Cambria";
+}
+
+#productsButton,#ordersButton,#rawMaterialsButton,#reportsButton{
+    -fx-width:200px;
+    -fx-height:300px;
+    -fx-padding:10px;
+}

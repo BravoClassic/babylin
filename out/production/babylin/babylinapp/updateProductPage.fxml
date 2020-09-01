@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="550.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="babylinapp.UpdateProductPageController">
+    <HBox prefHeight="550.0" prefWidth="300.0">
+        <AnchorPane prefHeight="500.0" prefWidth="300.0">
+            <ComboBox fx:id="productList" layoutX="57.0" layoutY="80.0" onAction="#display" prefHeight="25.0" prefWidth="186.0" promptText="Select Product" />
+            <TextField fx:id="productName" layoutX="55.0" layoutY="129.0" prefHeight="25.0" prefWidth="186.0" promptText="Product Name" />
+            <TextField fx:id="productQuantity" layoutX="57.0" layoutY="179.0" prefHeight="25.0" prefWidth="186.0" promptText="Product Quantity" />
+            <TextField fx:id="productUnitPrice" layoutX="55.0" layoutY="230.0" prefHeight="25.0" prefWidth="186.0" promptText="Product Unit Price" />
+            <TextArea fx:id="productDescription" layoutX="55.0" layoutY="278.0" prefHeight="200.0" prefWidth="186.0" promptText="Product Description" />
+            <Label alignment="CENTER" layoutX="82.0" layoutY="14.0" prefHeight="48.0" prefWidth="132.0" text="Update Product">
+                <font>
+                    <Font size="17.0" />
+                </font>
+            </Label>
+            <Button fx:id="update" layoutX="57.0" layoutY="490.0" mnemonicParsing="false" onAction="#update" prefHeight="25.0" prefWidth="63.0" text="Update" />
+            <Button fx:id="cancel" layoutX="178.0" layoutY="490.0" mnemonicParsing="false" onAction="#goBack" prefHeight="25.0" prefWidth="63.0" text="Cancel" />
+        </AnchorPane>
+    </HBox>
+</AnchorPane>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="300.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="babylinapp.AddRawMaterialsPageController">
+   <HBox prefHeight="300.0" prefWidth="400.0">
+      <AnchorPane prefHeight="300.0" prefWidth="400.0">
+         <ComboBox fx:id="addRawMaterialsComboBox" layoutX="125.0" layoutY="109.0" prefWidth="150.0"
+                   promptText="Select Raw Material"/>
+         <Spinner  fx:id="addRawMaterialsQuantity" layoutX="126.0" layoutY="158.0" promptText="Enter Quantity"/>
+         <Label alignment="CENTER" layoutX="149.0" layoutY="35.0" prefHeight="48.0" prefWidth="102.0"
+                text="Add Raw Materials">
+            <font>
+               <Font size="17.0"/>
+            </font>
+            </Label>
+         <Button fx:id="addRawMaterialsBtn" layoutX="125.0" layoutY="207.0" mnemonicParsing="false" onAction="#addRawMaterials" prefHeight="25.0" prefWidth="70.0" text="Add"/>
+         <Button layoutX="205.0" fx:id="cancel" layoutY="207.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="70.0" onAction="#goBack" text="Cancel"/>
+      </AnchorPane>
+   </HBox>
+</AnchorPane>
