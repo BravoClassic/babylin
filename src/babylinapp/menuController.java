@@ -13,7 +13,9 @@ import java.util.ResourceBundle;
 
 public class menuController implements Initializable {
 
-    public Button appointment;
+    @FXML
+    private Button appointmentButton;
+
     @FXML
     private Label welcome;
 
@@ -39,6 +41,11 @@ public class menuController implements Initializable {
     public void displayOrders() throws IOException{
         Stage stage= (Stage) ordersButton.getScene().getWindow();
         new orders().start(stage);
+    }
+
+    public void displayAppointments() throws IOException {
+        Stage stage = (Stage) appointmentButton.getScene().getWindow();
+        new scheduleAppointment().start(stage);
     }
 
     public void displayStocks() throws IOException{
@@ -78,6 +85,8 @@ public class menuController implements Initializable {
                     rawMaterialsButton.setVisible(false);
                     productsButton.setDisable(true);
                     productsButton.setVisible(false);
+                    ordersButton.setDisable(true);
+                    ordersButton.setVisible(false);
                 }
             }
             if(jdbcController.userType.equals("Employee")) {

@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="500.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="babylinapp.ordersController">
+<AnchorPane fx:id="orderWindow" prefHeight="500.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="babylinapp.ordersController">
    <HBox layoutY="94.0" prefHeight="400.0" prefWidth="217.0">
       <AnchorPane prefHeight="400.0" prefWidth="216.0">
          <ComboBox fx:id="customerName" layoutX="34.0" layoutY="81.0" onAction="#clearOrderSheet" prefHeight="25.0" prefWidth="150.0" promptText="Customer Name" />
@@ -33,26 +33,19 @@
          <Button fx:id="menu" layoutX="224.0" layoutY="338.0" mnemonicParsing="false" onAction="#goMenu" prefHeight="25.0" prefWidth="60.0" text="Menu" />
       </AnchorPane>
    </HBox>
-   <HBox layoutX="588.0" layoutY="94.0" prefHeight="400.0" prefWidth="265.0">
+   <HBox fx:id="customer" layoutX="588.0" layoutY="94.0" prefHeight="400.0" prefWidth="265.0">
       <AnchorPane prefHeight="400.0" prefWidth="265.0">
-         <Label alignment="CENTER" layoutX="65.0" layoutY="26.0" prefHeight="39.0" prefWidth="136.0"
-                text="Customer Name">
+         <Label alignment="CENTER" layoutX="65.0" layoutY="26.0" prefHeight="39.0" prefWidth="136.0" text="Customer Name">
             <font>
-               <Font size="17.0"/>
+               <Font size="17.0" />
             </font>
          </Label>
-         <TextField fx:id="userNameFull" layoutX="59.0" layoutY="96.0" prefHeight="25.0" prefWidth="163.0"
-                    promptText="Full Name"/>
-         <TextField fx:id="email" layoutX="59.0" layoutY="175.0" prefHeight="25.0" prefWidth="163.0"
-                    promptText="Email"/>
-         <TextField fx:id="address" layoutX="59.0" layoutY="217.0" prefHeight="25.0" prefWidth="163.0"
-                    promptText="Address"/>
-         <TextField fx:id="phone" layoutX="59.0" layoutY="257.0" prefHeight="25.0" prefWidth="163.0"
-                    promptText="Phone Number"/>
-         <Button fx:id="addUserName" layoutX="59.0" layoutY="325.0" mnemonicParsing="false" onAction="#addUser"
-                 prefHeight="25.0" prefWidth="60.0" text="Add"/>
-         <Button fx:id="clearUserName" layoutX="162.0" layoutY="325.0" mnemonicParsing="false" onAction="#clearUser"
-                 prefHeight="25.0" prefWidth="60.0" text="Clear"/>
+         <TextField fx:id="userNameFull" layoutX="59.0" layoutY="96.0" prefHeight="25.0" prefWidth="163.0" promptText="Full Name" />
+         <TextField fx:id="email" layoutX="59.0" layoutY="175.0" prefHeight="25.0" prefWidth="163.0" promptText="Email" />
+         <TextField fx:id="address" layoutX="59.0" layoutY="217.0" prefHeight="25.0" prefWidth="163.0" promptText="Address" />
+         <TextField fx:id="phone" layoutX="59.0" layoutY="257.0" prefHeight="25.0" prefWidth="163.0" promptText="Phone Number" />
+         <Button fx:id="addUserName" layoutX="59.0" layoutY="325.0" mnemonicParsing="false" onAction="#addUser" prefHeight="25.0" prefWidth="60.0" text="Add" />
+         <Button fx:id="clearUserName" layoutX="162.0" layoutY="325.0" mnemonicParsing="false" onAction="#clearUser" prefHeight="25.0" prefWidth="60.0" text="Clear" />
       </AnchorPane>
    </HBox>
 </AnchorPane>

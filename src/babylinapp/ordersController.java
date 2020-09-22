@@ -6,6 +6,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -30,6 +32,12 @@ import java.util.Date;
 import java.util.*;
 
 public class ordersController implements Initializable {
+
+    @FXML
+    protected AnchorPane orderWindow;
+
+    @FXML
+    protected HBox customer;
 
     @FXML
     protected TextField phone;
@@ -183,7 +191,8 @@ public class ordersController implements Initializable {
                  //getUserID
                  if (userId != -1) {
                      timeDateOrder = Date.from(Instant.now());
-                     SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                     SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss 'Z'");
+                     ft.setTimeZone(TimeZone.getTimeZone("GMT"));
                      dtOrder=ft.format(timeDateOrder);//Formatted date
                      //Update babylinapp_orders first
                      Connection connection = DriverManager.getConnection(jdbcController.url, jdbcController.user, jdbcController.password);
@@ -477,33 +486,38 @@ public class ordersController implements Initializable {
     }
         @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        if(jdbcController.userType.equals("Employee")){
-        try {
-            Connection connection = DriverManager.getConnection(jdbcController.url, jdbcController.user, jdbcController.password);
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM babylinapp_products");
+            try {
+                Connection connection = DriverManager.getConnection(jdbcController.url, jdbcController.user, jdbcController.password);
+                PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM babylinapp_products");
 
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                productList.getItems().add(resultSet.getString("ProductName"));
-                quantityList.add(Integer.parseInt(resultSet.getString("quantity")));
-                productListTable.add((new productClass(
-                        resultSet.getInt("productId"),
-                        resultSet.getString("ProductName"),
-                        resultSet.getInt("quantity"),
-                        resultSet.getDouble("unitPrice"),
-                        resultSet.getString("productDescription")
-                )));
+                ResultSet resultSet = preparedStatement.executeQuery();
+                while (resultSet.next()) {
+                    productList.getItems().add(resultSet.getString("ProductName"));
+                    quantityList.add(Integer.parseInt(resultSet.getString("quantity")));
+                    productListTable.add((new productClass(
+                            resultSet.getInt("productId"),
+                            resultSet.getString("ProductName"),
+                            resultSet.getInt("quantity"),
+                            resultSet.getDouble("unitPrice"),
+                            resultSet.getString("productDescription")
+                    )));
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
-            preparedStatement =connection.prepareStatement("SELECT * FROM babylinapp_users");
-            resultSet =preparedStatement.executeQuery();
-            while (resultSet.next()){
-                userList.add(resultSet.getString("userName"));
-            }
-            connection.close();
-            customerName.getItems().addAll(userList);
-        } catch (SQLException e) {
-            jdbcController.printSQLException(e);
-        }
+            if(jdbcController.userType.equals("Employee")){
+                    try{
+                        Connection connection = DriverManager.getConnection(jdbcController.url, jdbcController.user, jdbcController.password);
+                        PreparedStatement preparedStatement =connection.prepareStatement("SELECT * FROM babylinapp_users");
+                        ResultSet resultSet =preparedStatement.executeQuery();
+                        while (resultSet.next()){
+                            userList.add(resultSet.getString("userName"));
+                        }
+                        connection.close();
+                        customerName.getItems().addAll(userList);
+                    } catch (SQLException e) {
+                        jdbcController.printSQLException(e);
+                    }
     }
         else if(jdbcController.userType.equals("Customer")){
             try {
@@ -519,6 +533,8 @@ public class ordersController implements Initializable {
             } catch (SQLException e) {
                 jdbcController.printSQLException(e);
             }
+            customer.setVisible(false);
+//            .setPrefWidth(450.00);
         }
 
     }

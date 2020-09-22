@@ -1,5 +1,21 @@
 .root{
--fx-font-family:"Cambria";
+    -fx-font-family:"Cambria";
+    -fx-width: 100%;
+    -fx-height:100%;
+}
+
+#main{
+    -fx-width:100%;
+    -fx-height:100%;
+}
+
+#imageSideBar{
+    -fx-width:40%;
+    -fx-height:100%;
+}
+
+#loginPage{
+    -fx-height:100%;
 }
 
 #productsButton,#ordersButton,#rawMaterialsButton,#reportsButton{

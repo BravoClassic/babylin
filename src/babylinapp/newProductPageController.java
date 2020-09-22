@@ -9,7 +9,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.sql.*;
 
-public class newProductPageClass {
+public class newProductPageController {
     //Product new Page Controller(newProductPage.fxml)
 
     @FXML

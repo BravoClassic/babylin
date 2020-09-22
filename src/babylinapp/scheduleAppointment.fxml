@@ -3,19 +3,36 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="babylinapp.scheduleAppointmentController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="babylinapp.scheduleAppointmentController">
     <TabPane fx:id="tabPane" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE">
         <Tab fx:id="tabScheduledAppointment" text="Schedule">
-            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                <Label layoutX="40.0" layoutY="47.0" prefHeight="46.0" prefWidth="111.0" text="Label"/>
-                <Label layoutX="40.0" layoutY="104.0" prefHeight="46.0" prefWidth="111.0" text="Label"/>
-                <DatePicker layoutX="202.0" layoutY="123.0" prefHeight="32.0" prefWidth="169.0"/>
-                <Spinner fx:id="time" layoutX="202.0" layoutY="173.0"/>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="400.0" prefWidth="600.0">
+                <Label fx:id="user" layoutX="40.0" layoutY="47.0" prefHeight="46.0" prefWidth="111.0" text="Name:" />
+                <Label fx:id="id" layoutX="40.0" layoutY="104.0" prefHeight="46.0" prefWidth="111.0" text="User Id" />
+                <DatePicker fx:id="dateSchedule" layoutX="182.0" layoutY="54.0" prefHeight="26.0" prefWidth="190.0" promptText="Select Date" />
+                <Label layoutX="185.0" layoutY="150.0" prefHeight="17.0" prefWidth="59.0" text="Hour" />
+                <Spinner fx:id="hourTime" layoutX="183.0" layoutY="173.0" prefHeight="25.0" prefWidth="75.0" />
+                <Label layoutX="277.0" layoutY="177.0" prefHeight="17.0" prefWidth="13.0" text=" :" />
+                <Label layoutX="300.0" layoutY="150.0" prefHeight="17.0" prefWidth="59.0" text="Minute" />
+                <Spinner fx:id="minuteTime" layoutX="302.0" layoutY="173.0" prefHeight="25.0" prefWidth="71.0" />
+                <Button fx:id="schedule" layoutX="183.0" layoutY="222.0" onAction="#book" prefHeight="28.0" prefWidth="194.0" text="Book" />
+                <Button fx:id="back" layoutX="182.0" layoutY="270.0" mnemonicParsing="false" onAction="#goBack" prefHeight="25.0" prefWidth="196.0" text="Back" />
+<!--            <Spinner fx:id="timeSpinnerSchedule" layoutX="184.0" layoutY="105.0" prefHeight="25.0" prefWidth="185.0" />-->
             </AnchorPane>
         </Tab>
         <Tab fx:id="tabScheduledAppointments" text="Scheduled Appointments">
-            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0"/>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="400.0" prefWidth="600.0">
+                <TableView fx:id="appointmentTable" layoutX="60.0" layoutY="38.0" prefHeight="276.0" prefWidth="480.0">
+                    <columns>
+                        <TableColumn fx:id="appointmentIdColumn" prefWidth="110.0" text="Appointment Id" />
+                  <TableColumn fx:id="userIdColumn" prefWidth="118.0" text="User Id" />
+                        <TableColumn fx:id="dateColumn" minWidth="0.0" prefWidth="110.0" text="Date" />
+                        <TableColumn fx:id="timeColumn" prefWidth="179.0" text="Time" />
+                    </columns>
+                </TableView>
+                <Button layoutX="362.0" layoutY="323.0" mnemonicParsing="false" onAction="#deleteAppointment" prefHeight="25.0" prefWidth="64.0" text="Delete" />
+                <Button fx:id="back1" layoutX="453.0" layoutY="323.0" mnemonicParsing="false" onAction="#goBack" prefHeight="25.0" prefWidth="66.0" text="Back" />
+            </AnchorPane>
         </Tab>
     </TabPane>
 </AnchorPane>

@@ -7,19 +7,23 @@
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="babylinapp.menuController">
     <Pane prefHeight="400.0" prefWidth="600.0">
         <AnchorPane prefHeight="400.0" prefWidth="600.0">
-            <Button fx:id="productsButton" layoutX="307.0" layoutY="149.0" mnemonicParsing="false" onAction="#displayProduct" text="Products" />
-            <Button fx:id="ordersButton" layoutX="207.0" layoutY="237.0" mnemonicParsing="false" onAction="#displayOrders" text="Orders" />
-            <Button fx:id="rawMaterialsButton" layoutX="207.0" layoutY="149.0" mnemonicParsing="false" onAction="#displayStocks" text="Raw Materials" />
-            <Button fx:id="reportsButton" layoutX="310.0" layoutY="237.0" mnemonicParsing="false" onAction="#displayReports" text="Reports" />
-            <Button fx:id="logOutButton" layoutX="257.0" layoutY="299.0" mnemonicParsing="false" onAction="#logOut" text="Log Out" />
-            <Label alignment="CENTER" layoutX="209.0" layoutY="34.0" prefHeight="59.0" prefWidth="155.0" text="Main Menu">
+            <Label alignment="CENTER" layoutX="209.0" layoutY="26.0" prefHeight="59.0" prefWidth="155.0" text="Main Menu">
                 <font>
                     <Font size="29.0" />
                 </font>
             </Label>
-         <Button fx:id="settings" layoutX="500.0" layoutY="22.0" mnemonicParsing="false" text="Settings" />
          <Label fx:id="welcome" layoutX="46.0" layoutY="26.0" text="Welcome" />
-         <Button fx:id="appointment" layoutX="241.0" layoutY="188.0" mnemonicParsing="false" text="Appointments" />
+         <VBox layoutX="198.0" layoutY="85.0" prefHeight="282.0" prefWidth="177.0">
+            <children>
+                  <Button fx:id="reportsButton" mnemonicParsing="false" onAction="#displayReports" prefHeight="41.0" prefWidth="181.0" text="Reports" />
+                  <Button fx:id="ordersButton" mnemonicParsing="false" onAction="#displayOrders" prefHeight="38.0" prefWidth="177.0" text="Orders" />
+               <Button fx:id="settings" mnemonicParsing="false" prefHeight="35.0" prefWidth="178.0" text="Settings" />
+                  <Button fx:id="rawMaterialsButton" mnemonicParsing="false" onAction="#displayStocks" prefHeight="40.0" prefWidth="178.0" text="Raw Materials" />
+               <Button fx:id="appointmentButton" mnemonicParsing="false" onAction="#displayAppointments" prefHeight="47.0" prefWidth="179.0" text="Appointments" />
+                  <Button fx:id="productsButton" mnemonicParsing="false" onAction="#displayProduct" prefHeight="43.0" prefWidth="179.0" text="Products" />
+                  <Button fx:id="logOutButton" mnemonicParsing="false" onAction="#logOut" prefHeight="39.0" prefWidth="182.0" text="Log Out" />
+            </children>
+         </VBox>
         </AnchorPane>
     </Pane>
 </AnchorPane>
