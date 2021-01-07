@@ -17,60 +17,48 @@ import java.util.ResourceBundle;
 
 public class rawMaterialsController implements Initializable {
     @FXML
-     Label rawPrice;
+    private Label rawPrice;
 
     @FXML
-    Label rawQuantity;
+    private Label rawQuantity;
 
     @FXML
-    TextArea rawDesc;
+    private TextArea rawDesc;
 
     @FXML
-    Label rawName;
+    private Label rawName;
 
     @FXML
-    ComboBox<String> comboRawName;
-
-//    @FXML
-//    TableView<rawMaterialsClass> table;
-
-//    @FXML
-//    TableColumn<rawMaterialsClass, String> columnRawMaterials;
+    private ComboBox<String> comboRawName;
 
     @FXML
-    Button back;
+    private Button back;
 
     @FXML
-    Button next;
+    private Button newBtn;
 
     @FXML
-    Button previous;
+    private Button add;
 
     @FXML
-    Button newBtn;
+    private Button delete;
 
     @FXML
-    Button add;
+    private Button update;
+
+    private ObservableList<rawMaterialsClass> rawMaterialsList = FXCollections.observableArrayList();
 
     @FXML
-    Button delete;
-
-    @FXML
-    Button update;
-
-    ObservableList<rawMaterialsClass> rawMaterialsList = FXCollections.observableArrayList();
-
-    @FXML
-    protected void displayMaterial(){
+    private void displayMaterial(){
         rawName.setText("Name: "+rawMaterialsList.get(comboRawName.getSelectionModel().getSelectedIndex()).getRawMaterialsName());
         rawPrice.setText("Unit Price: "+rawMaterialsList.get(comboRawName.getSelectionModel().getSelectedIndex()).getRawMaterialsPrice());
         rawQuantity.setText("Quantity Available: "+rawMaterialsList.get(comboRawName.getSelectionModel().getSelectedIndex()).getRawMaterialsQuantity());
         rawDesc.setText(rawMaterialsList.get(comboRawName.getSelectionModel().getSelectedIndex()).getRawMaterialsDescription());
     }
 
-    protected void viewRawMaterials() throws SQLException {
+    private void viewRawMaterials() throws SQLException {
 
-        Connection connection = DriverManager.getConnection(jdbcController.url, jdbcController.user, jdbcController.password);
+        Connection connection = DriverManager.getConnection(jdbcController.url);
         PreparedStatement preparedStatement = connection.prepareStatement(jdbcController.SELECT_QUERY_RAW);
 
         ResultSet resultSet = preparedStatement.executeQuery();
@@ -80,6 +68,7 @@ public class rawMaterialsController implements Initializable {
             Double result2= resultSet.getDouble("unitPrice");
             String result3 = resultSet.getString("rawMaterialDescription");
             rawMaterialsList.add(new rawMaterialsClass(result, result1, result2, result3));
+            comboRawName.getItems().add(result);
         }
         connection.close();
 

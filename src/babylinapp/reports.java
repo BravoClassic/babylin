@@ -18,7 +18,7 @@ public class reports extends Application {
     public void start(Stage primaryStage) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("reports.fxml"));
         primaryStage.setTitle("Babylin Consult | Reports");
-        primaryStage.setScene(new Scene(root, 850, 400));
+        primaryStage.setScene(new Scene(root, 850, 500));
         primaryStage.centerOnScreen();
         primaryStage.show();
     }

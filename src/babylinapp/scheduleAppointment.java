@@ -18,7 +18,7 @@ public class scheduleAppointment extends Application {
     public void start(Stage primaryStage) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("scheduleAppointment.fxml"));
         primaryStage.setTitle("Babylin Consult | Appointments");
-        Scene scene = new Scene(root, 850, 400);
+        Scene scene = new Scene(root, 600, 400);
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
         primaryStage.centerOnScreen();

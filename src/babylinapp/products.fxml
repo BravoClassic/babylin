@@ -1,42 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
 <AnchorPane prefHeight="400.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="babylinapp.productsController">
     <HBox layoutX="-1.0" prefHeight="400.0" prefWidth="280.0">
         <AnchorPane prefHeight="400.0" prefWidth="282.0">
-<!--            <TableView fx:id="table" prefHeight="400.0" prefWidth="274.0" tableMenuButtonVisible="true">-->
-<!--                <columns>-->
-<!--                    &lt;!&ndash;                       <TableColumn prefWidth="50.0" text="ID"/>&ndash;&gt;-->
-<!--                    <TableColumn fx:id="column" prefWidth="262.0" text="Products" />-->
-<!--                </columns>-->
-<!--            </TableView>-->
-         <ComboBox fx:id="comboProductName" layoutX="70.0" layoutY="150.0" onAction="#displayProduct" prefWidth="150.0" promptText="Select Product" />
+            <ComboBox fx:id="comboProductName" layoutX="13.0" layoutY="83.0" onAction="#displayProduct"
+                      prefWidth="150.0" promptText="Select Product"/>
+
+            <!--             <TableView fx:id="productsFinishTable" layoutX="21.0" layoutY="35.0" prefHeight="265.0" prefWidth="241.0">-->
+            <!--              <columns>-->
+            <!--                <TableColumn fx:id="productsFinish" prefWidth="236.0" text="Products about to Finish" />-->
+            <!--                <TableColumn fx:id="productsQuantity" prefWidth="236.0" text="Products about to Finish" />-->
+            <!--              </columns>-->
+            <!--            </TableView>-->
         </AnchorPane>
     </HBox>
     <HBox layoutX="264.0" prefHeight="400.0" prefWidth="424.0">
         <AnchorPane prefHeight="400.0" prefWidth="439.0">
-            <ImageView fitHeight="112.0" fitWidth="167.0" layoutX="29.0" layoutY="41.0" pickOnBounds="true" preserveRatio="true">
-                <Image url="@assets/black.jpg" />
-            </ImageView>
-            <Label fx:id="productLabelName" layoutX="220.0" layoutY="55.0" text="Name: Legrass Shampoo" />
-            <Label fx:id="productPrice" layoutX="220.0" layoutY="86.0" text="Unit Price: GHC 70" />
-            <Label fx:id="productQuantity" layoutX="220.0" layoutY="118.0" text="Quantity: 40" />
+<!--            <ImageView fitHeight="112.0" fitWidth="167.0" layoutX="29.0" layoutY="41.0" pickOnBounds="true" preserveRatio="true">-->
+<!--                <Image url="@assets/black.jpg" />-->
+<!--            </ImageView>-->
+            <Label fx:id="productLabelName" layoutX="32.0" layoutY="55.0" text="Name: Legrass Shampoo" />
+            <Label fx:id="productPrice" layoutX="32.0" layoutY="86.0" text="Unit Price: GHC 70" />
+            <Label fx:id="productQuantity" layoutX="32.0" layoutY="118.0" text="Quantity: 40" />
             <Label layoutX="30.0" layoutY="152.0" text="Description:" />
             <TextArea fx:id="productDesc" disable="true" layoutX="30.0" layoutY="176.0" prefHeight="147.0" prefWidth="332.0" text="Lorem ipsum it dolor sit dit be leike. Lisek the lorem ipsum dor lor to er ite." wrapText="true" />
-            <Button layoutX="80.0" layoutY="336.0" mnemonicParsing="false" onAction="#previous" prefHeight="25.0" prefWidth="66.0" text="Previous" />
-            <Button layoutX="178.0" layoutY="336.0" mnemonicParsing="false" onAction="#next" prefHeight="25.0" prefWidth="66.0" text="Next" />
             <Button fx:id="back" layoutX="269.0" layoutY="336.0" mnemonicParsing="false" onAction="#goBack" prefHeight="25.0" prefWidth="66.0" text="Back" />
         </AnchorPane>
     </HBox>
     <HBox layoutX="675.0" prefHeight="400.0" prefWidth="175.0">
         <AnchorPane prefHeight="200.0" prefWidth="200.0">
-            <Button fx:id="add" layoutX="60.0" layoutY="51.0" mnemonicParsing="false" onAction="#addProduct" prefHeight="25.0" prefWidth="66.0" text="Add" />
-            <Button fx:id="newBtn" layoutX="60.0" layoutY="103.0" mnemonicParsing="false" onAction="#newProduct" prefHeight="25.0" prefWidth="66.0" text="New" />
-            <Button fx:id="delete" layoutX="60.0" layoutY="150.0" mnemonicParsing="false" onAction="#deleteProduct" prefHeight="25.0" prefWidth="66.0" text="Delete" />
-            <Button fx:id="update" layoutX="60.0" layoutY="201.0" mnemonicParsing="false" onAction="#updateProduct" prefHeight="25.0" prefWidth="66.0" text="Update" />
+            <Button fx:id="add" layoutX="55.0" layoutY="139.0" mnemonicParsing="false" onAction="#addProduct" prefHeight="25.0" prefWidth="66.0" text="Add" />
+            <Button fx:id="newBtn" layoutX="55.0" layoutY="191.0" mnemonicParsing="false" onAction="#newProduct" prefHeight="25.0" prefWidth="66.0" text="New" />
+            <Button fx:id="delete" layoutX="55.0" layoutY="238.0" mnemonicParsing="false" onAction="#deleteProduct" prefHeight="25.0" prefWidth="66.0" text="Delete" />
+            <Button fx:id="update" layoutX="55.0" layoutY="289.0" mnemonicParsing="false" onAction="#updateProduct" prefHeight="25.0" prefWidth="66.0" text="Update" />
+<!--         <ComboBox fx:id="comboProductName" layoutX="13.0" layoutY="83.0" onAction="#displayProduct" prefWidth="150.0" promptText="Select Product" />-->
         </AnchorPane>
     </HBox>
 </AnchorPane>

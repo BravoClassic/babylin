@@ -1,12 +1,21 @@
-.root{
+root{
     -fx-font-family:"Cambria";
     -fx-width: 100%;
     -fx-height:100%;
 }
 
+#imageBorderPane{
+    -fx-width:50%;
+    -fx-height:100%
+}
+
 #main{
     -fx-width:100%;
     -fx-height:100%;
+}
+
+#menuPane{
+    -fx-background-color:green;
 }
 
 #imageSideBar{

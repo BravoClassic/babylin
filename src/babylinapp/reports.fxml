@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import javafx.collections.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.media.*?>
 <?import javafx.scene.text.*?>
 
 <AnchorPane prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="babylinapp.reportsController">
@@ -19,26 +20,44 @@
       </top>
       <left>
          <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-            <DatePicker fx:id="specificDate" layoutX="13.0" layoutY="107.0" promptText="Select Date" />
+            <DatePicker fx:id="startDate" layoutX="13.0" layoutY="62.0" promptText="Start date" />
+            <DatePicker fx:id="endDate" layoutX="13.0" layoutY="103.0" promptText="End Date" />
          </AnchorPane>
       </left>
       <center>
-         <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-            <MediaView fx:id="pdfReportViewer"  fitHeight="400.0" fitWidth="400.0" layoutX="3.0">
-               <viewport>
-                  <Rectangle2D height="400.0" minX="300.0" minY="300.0" width="400.0" />
-               </viewport></MediaView>
+         <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: grey;" BorderPane.alignment="CENTER">
+             <TabPane prefHeight="299.0" prefWidth="403.0" tabClosingPolicy="UNAVAILABLE">
+                 <Tab fx:id="revenue" text="Revenue">
+                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                         <ImageView fx:id="reportRevenueImage" fitHeight="272.0" fitWidth="391.0" pickOnBounds="true" preserveRatio="true" />
+                     </AnchorPane>
+                 </Tab>
+                 <Tab fx:id="products" text="Products">
+                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                         <ImageView fx:id="reportProductsImage" fitHeight="271.0" fitWidth="404.0" pickOnBounds="true" preserveRatio="true"/>
+                     </AnchorPane>
+                 </Tab>
+             </TabPane>
          </AnchorPane>
       </center>
       <right>
          <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-            <ComboBox fx:id="comboBoxReportType" layoutX="20.0" layoutY="109.0" prefHeight="25.0" prefWidth="162.0" promptText="Select Type of report" />
-            <Button fx:id="generateReportButton" layoutX="45.0" layoutY="175.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="111.0" text="Generate Report" />
-            <Button fx:id="back" layoutX="45.0" layoutY="218.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="111.0" text="Back" />
+            <ComboBox fx:id="comboBoxReportType" layoutX="20.0" layoutY="109.0" prefHeight="25.0" prefWidth="162.0" promptText="Select Type of report">
+                <items>
+                    <FXCollections fx:factory="observableArrayList">
+                        <String fx:value="Daily" />
+<!--                        <String fx:value="Monthly" />-->
+<!--                        <String fx:value="Yearly" />-->
+                    </FXCollections>
+                </items>
+            </ComboBox>
          </AnchorPane>
       </right>
       <bottom>
-         <AnchorPane prefHeight="100.0" prefWidth="800.0" BorderPane.alignment="CENTER" />
+          <AnchorPane prefHeight="100.0" prefWidth="800.0" BorderPane.alignment="CENTER">
+              <Button fx:id="generateReportButton" layoutX="218.0" layoutY="32.0" mnemonicParsing="false" onAction="#generateReport" prefHeight="25.0" prefWidth="111.0" text="Generate Report" />
+              <Button fx:id="back" layoutX="444.0" layoutY="28.0" mnemonicParsing="false" onAction="#goMenu" prefHeight="25.0" prefWidth="111.0" text="Back" />
+          </AnchorPane>
       </bottom>
    </BorderPane>
 </AnchorPane>

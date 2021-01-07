@@ -4,10 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -19,77 +16,75 @@ import java.util.ResourceBundle;
 public class productsController implements Initializable {
 
     @FXML
-    Label productLabelName;
+    private TableColumn<String,Integer> productsQuantity;
+    @FXML
+    private TableView<productClass> productsFinishTable;
 
     @FXML
-    Label productPrice;
+    private Label productLabelName;
 
     @FXML
-    Label productQuantity;
+    private Label productPrice;
 
     @FXML
-    TextArea productDesc;
+    private Label productQuantity;
 
     @FXML
-    Button back;
+    private TextArea productDesc;
 
     @FXML
-    Button add;
+    private Button back;
 
     @FXML
-    Button newBtn;
+    private Button add;
 
     @FXML
-    Button delete;
+    private Button newBtn;
 
     @FXML
-    Button update;
+    private Button delete;
 
-//    @FXML
-//    TableView<productClass> table;
-//
-//    @FXML
-//    TableColumn<productClass, String> column = new TableColumn<>("Product");
-//
-    ObservableList<productClass> productList = FXCollections.observableArrayList();
+    @FXML
+    private Button update;
+
+    private ObservableList<productClass> productList = FXCollections.observableArrayList();
 
     @FXML
     ComboBox<String> comboProductName;
 
     @FXML
-    protected void addProduct() throws IOException {
+    private void addProduct() throws IOException {
         Stage stage = (Stage) add.getScene().getWindow();
         new addProductPage().start(stage);
     }
 
     @FXML
-    protected void newProduct() throws IOException{
+    private void newProduct() throws IOException {
         Stage stage = (Stage) newBtn.getScene().getWindow();
         new newProductPage().start(stage);
     }
 
     @FXML
-    protected void deleteProduct() throws IOException{
+    private void deleteProduct() throws IOException{
         Stage stage = (Stage) delete.getScene().getWindow();
         new deleteProductPage().start(stage);
     }
 
     @FXML
-    protected void updateProduct() throws IOException {
+    private void updateProduct() throws IOException {
         Stage stage = (Stage) update.getScene().getWindow();
         new updateProductPage().start(stage);
     }
 
     @FXML
-    protected void goBack() throws IOException {
+    private void goBack() throws IOException {
         Stage stage = (Stage) back.getScene().getWindow();
         new Menu().start(stage);
     }
 
     @FXML
-    protected void viewProduct() throws SQLException {
-
-        Connection connection = DriverManager.getConnection(jdbcController.url, jdbcController.user, jdbcController.password);
+    private void viewProduct() throws SQLException {
+        Connection connection = DriverManager.getConnection(jdbcController.url);
         PreparedStatement preparedStatement = connection.prepareStatement(jdbcController.SELECT_QUERY_PRODUCTS);
 
         ResultSet resultSet = preparedStatement.executeQuery();
@@ -107,36 +102,13 @@ public class productsController implements Initializable {
     }
 
     @FXML
-    protected void displayProduct(){
+    private void displayProduct(){
         productLabelName.setText("Name: "+productList.get(comboProductName.getSelectionModel().getSelectedIndex()).getProductName());
         productPrice.setText("Unit Price: "+productList.get(comboProductName.getSelectionModel().getSelectedIndex()).getProductPrice());
         productQuantity.setText("Quantity Available: "+productList.get(comboProductName.getSelectionModel().getSelectedIndex()).getProductQuantity());
         productDesc.setText(productList.get(comboProductName.getSelectionModel().getSelectedIndex()).getProductDesc());
     }
 
-    @FXML
-    protected void next(){
-        int size = comboProductName.getItems().size();
-        int selectedIndex = comboProductName.getSelectionModel().getSelectedIndex();
-        if (selectedIndex<size){
-            productLabelName.setText("Name: "+productList.get(comboProductName.getSelectionModel().getSelectedIndex()+1).getProductName());
-            productPrice.setText("Unit Price: "+productList.get(comboProductName.getSelectionModel().getSelectedIndex()+1).getProductPrice());
-            productQuantity.setText("Quantity Available: "+productList.get(comboProductName.getSelectionModel().getSelectedIndex()+1).getProductQuantity());
-            productDesc.setText(productList.get(comboProductName.getSelectionModel().getSelectedIndex()+1).getProductDesc());
-        }
-    }
-
-    @FXML
-    protected void previous(){
-        int selectedIndex = comboProductName.getSelectionModel().getSelectedIndex();
-        if (selectedIndex>0){
-//            comboProductName.setValue();
-            productLabelName.setText("Name: "+productList.get(comboProductName.getSelectionModel().getSelectedIndex()-1).getProductName());
-            productPrice.setText("Unit Price: "+productList.get(comboProductName.getSelectionModel().getSelectedIndex()-1).getProductPrice());
-            productQuantity.setText("Quantity Available: "+productList.get(comboProductName.getSelectionModel().getSelectedIndex()-1).getProductQuantity());
-            productDesc.setText(productList.get(comboProductName.getSelectionModel().getSelectedIndex()-1).getProductDesc());
-        }
-    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -145,8 +117,6 @@ public class productsController implements Initializable {
         } catch (SQLException e) {
             jdbcController.printSQLException(e);
         }
-//        column.setCellValueFactory(new PropertyValueFactory<>("productName"));
-//        table.setItems(productList);
     }
     
 

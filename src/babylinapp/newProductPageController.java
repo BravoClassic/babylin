@@ -13,23 +13,23 @@ public class newProductPageController {
     //Product new Page Controller(newProductPage.fxml)
 
     @FXML
-    TextField newProductNameProductPage;//Product Name
+    private TextField newProductNameProductPage;//Product Name
 
     @FXML
-    TextField newProductPriceProductPage;//Product Price
+    private TextField newProductPriceProductPage;//Product Price
 
     @FXML
-    TextField newProductQuantityProductPage;//Product Quantity
+    private TextField newProductQuantityProductPage;//Product Quantity
 
     @FXML
-    TextArea newProductDescProductPage; //Product Description
+    private TextArea newProductDescProductPage; //Product Description
 
     @FXML
-    Button cancel;
+    private Button cancel;
 
     private boolean check() throws SQLException {
         try (
-                Connection connection = DriverManager.getConnection(jdbcController.url, jdbcController.user, jdbcController.password);
+                Connection connection = DriverManager.getConnection(jdbcController.url);
                 PreparedStatement preparedStatement = connection.prepareStatement(jdbcController.SELECT_QUERY_PRODUCTS_ADD)
         ) {
             preparedStatement.setString(1, newProductNameProductPage.getText());
@@ -41,10 +41,14 @@ public class newProductPageController {
 
     @FXML
     protected void newProduct() throws SQLException {
+        if(newProductNameProductPage.getText().equals("")||newProductPriceProductPage.getText().equals("")||newProductQuantityProductPage.getText().equals("")||newProductDescProductPage.getText().equals("")){
+            Controller.infoBox("Empty field. Enter a value",null,"Error");
+            return;
+        }
         boolean checked = check();
         if (!checked) {
             try (
-                    Connection connection = DriverManager.getConnection(jdbcController.url, jdbcController.user, jdbcController.password);
+                    Connection connection = DriverManager.getConnection(jdbcController.url);
                     PreparedStatement preparedStatement = connection.prepareStatement(jdbcController.INSERT_QUERY_PRODUCTS)
             ) {
                 preparedStatement.setString(1, null);
@@ -59,6 +63,8 @@ public class newProductPageController {
                 } else {
                     Controller.infoBox("Could not add new product " + newProductNameProductPage.getText() + ".", null, "Failed");
                 }
+            }catch (SQLException e){
+                jdbcController.printSQLException(e);
             }
         } else {
             Controller.infoBox("Product exits already!", null, "Failed");

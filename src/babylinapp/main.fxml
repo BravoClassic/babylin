@@ -2,42 +2,50 @@
 
 <?import java.lang.*?>
 <?import javafx.collections.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
 <AnchorPane fx:id="main" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1080.0" style="-fx-background-color: #fff;" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="babylinapp.Controller">
-   <HBox fx:id="imageSideBar" prefHeight="400.0" prefWidth="250.0">
-      <ImageView fitHeight="720.0" fitWidth="477.0" pickOnBounds="true" preserveRatio="true">
-         <Image url="@assets/hair.jpg" />
-      </ImageView>
-   </HBox>
-   <HBox fx:id="loginPage" layoutX="452.0" prefHeight="720.0" prefWidth="629.0">
-      <AnchorPane prefHeight="720.0" prefWidth="631.0">
-            <ComboBox fx:id="u_type_login" layoutX="241.0" layoutY="219.0" prefWidth="150.0" promptText="User Type">
-               <items>
-                  <FXCollections fx:factory="observableArrayList">
-                     <String fx:value="Customer" />
-                     <String fx:value="Employee" />
-                  </FXCollections>
-               </items>
-            </ComboBox>
-         <TextField id="emailIdField" fx:id="emailIdField" accessibleText="Enter your email address" layoutX="241.0" layoutY="261.0" promptText="Email " />
-         <PasswordField fx:id="passwordField" accessibleText="Enter your password" layoutX="241.0" layoutY="313.0" promptText="Password" />
-         <Button id="submitButton" fx:id="submitButton" layoutX="241.0" layoutY="377.0" mnemonicParsing="false" onAction="#login" prefHeight="25.0" prefWidth="149.0" text="Sign In" />
-         <Label layoutX="241.0" layoutY="442.0" text="Register here." />
-         <Label fx:id="registerTxtBtn" layoutX="344.0" layoutY="442.0" onMouseClicked="#switchRegister" prefHeight="17.0" prefWidth="46.0" text="Register" textFill="#367eff" underline="true">
-            <cursor>
-               <Cursor fx:constant="HAND" />
-            </cursor>
-         </Label>
-         <ImageView fitHeight="134.0" fitWidth="221.0" layoutX="204.0" layoutY="29.0" pickOnBounds="true" preserveRatio="true">
-            <cursor>
-               <Cursor fx:constant="DEFAULT" />
-            </cursor>
-            <Image url="@assets/logo.jpg" />
+   <BorderPane fx:id="imageBorderPane" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <left>
+         <AnchorPane prefHeight="720.0" prefWidth="447.0" BorderPane.alignment="CENTER">
+            <ImageView fitHeight="720.0" fitWidth="477.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" BorderPane.alignment="CENTER">
+            <Image url="@assets/hair.jpg" />
+            <viewport>
+               <Rectangle2D />
+            </viewport>
          </ImageView>
-      </AnchorPane>
-   </HBox>
+         </AnchorPane>
+      </left>
+      <center>
+         <AnchorPane minWidth="300.0" prefHeight="720.0" prefWidth="631.0" style="-fx-background-color: white;" BorderPane.alignment="CENTER">
+               <ComboBox fx:id="u_type_login" layoutX="241.0" layoutY="219.0" prefWidth="150.0" promptText="User Type" AnchorPane.bottomAnchor="476.0" AnchorPane.topAnchor="219.0">
+                  <items>
+                     <FXCollections fx:factory="observableArrayList">
+                        <String fx:value="Customer" />
+                        <String fx:value="Employee" />
+                     </FXCollections>
+                  </items>
+               </ComboBox>
+            <TextField id="emailIdField" fx:id="emailIdField" accessibleText="Enter your email address" layoutX="241.0" layoutY="261.0" promptText="Email " AnchorPane.bottomAnchor="434.0" AnchorPane.topAnchor="261.0" />
+            <PasswordField fx:id="passwordField" accessibleText="Enter your password" layoutX="240.0" layoutY="311.0" promptText="Password" AnchorPane.bottomAnchor="384.0" AnchorPane.topAnchor="311.0" />
+            <Button id="submitButton" fx:id="submitButton" layoutX="240.0" layoutY="370.0" mnemonicParsing="false" onAction="#login" prefHeight="25.0" prefWidth="149.0" text="Sign In" AnchorPane.bottomAnchor="325.0" AnchorPane.topAnchor="370.0" />
+            <Label layoutX="240.0" layoutY="434.0" text="Register here." AnchorPane.bottomAnchor="269.0" AnchorPane.topAnchor="434.0" />
+            <Label fx:id="registerTxtBtn" layoutX="344.0" layoutY="434.0" onMouseClicked="#switchRegister" prefHeight="17.0" prefWidth="46.0" text="Register" textFill="#367eff" underline="true" AnchorPane.bottomAnchor="269.0" AnchorPane.topAnchor="434.0">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Label>
+            <ImageView fitHeight="134.0" fitWidth="221.0" layoutX="204.0" layoutY="29.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="574.4225006103516" AnchorPane.topAnchor="29.0">
+               <cursor>
+                  <Cursor fx:constant="DEFAULT" />
+               </cursor>
+               <Image url="@assets/logo.jpg" />
+            </ImageView>
+         </AnchorPane>
+      </center>
+   </BorderPane>
 </AnchorPane>

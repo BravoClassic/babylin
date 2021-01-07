@@ -4,6 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
@@ -13,6 +14,7 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -26,6 +28,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
@@ -67,6 +71,9 @@ public class ordersController implements Initializable {
     protected ComboBox<String> productList;
 
     @FXML
+    private ComboBox<String> via;
+
+    @FXML
     protected Button addProduct;
 
     @FXML
@@ -88,26 +95,26 @@ public class ordersController implements Initializable {
     protected TableView<productClass> tableOrder;
 
     @FXML
-    TableColumn<productClass, Integer> id = new TableColumn<>("ID");
+    private TableColumn<productClass, Integer> id = new TableColumn<>("ID");
 
     @FXML
-    TableColumn<productClass, String> productName = new TableColumn<>("Product");
+    private TableColumn<productClass, String> productName = new TableColumn<>("Product");
 
     @FXML
     TableColumn<productClass, Integer> quantityColumn = new TableColumn<>("Quantity");
 
     private ArrayList<Integer> quantityList = new ArrayList<>();
 
-    ObservableList<productClass> productListTable = FXCollections.observableArrayList();
+    private ObservableList<productClass> productListTable = FXCollections.observableArrayList();
 
-    ObservableList<productClass> orderList = FXCollections.observableArrayList();
+    private ObservableList<productClass> orderList = FXCollections.observableArrayList();
 
-    ObservableList<String> userList = FXCollections.observableArrayList();
+    private ObservableList<String> userList = FXCollections.observableArrayList();
 
-    double total =0;
+    private Double total =0.0;
     Date timeDateOrder;
-    String dtOrder;
-    int orderId;
+    private String dtOrder;
+    private int orderId;
 
     public void addList() {
         id.setCellValueFactory(new PropertyValueFactory<>("productID"));
@@ -157,7 +164,7 @@ public class ordersController implements Initializable {
     protected int getUserID(){
         int userId=0;
         try{
-            Connection connection=DriverManager.getConnection(jdbcController.url, jdbcController.user, jdbcController.password);
+            Connection connection=DriverManager.getConnection(jdbcController.url);
             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM babylinapp_users");
 //            preparedStatement.setString(1,customerName.getSelectionModel().getSelectedItem());
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -174,7 +181,9 @@ public class ordersController implements Initializable {
                     userId= -1;
                 }
             }
-
+            preparedStatement.close();
+            resultSet.close();
+            connection.close();
         } catch (SQLException e) {
             jdbcController.printSQLException(e);
         }
@@ -183,19 +192,23 @@ public class ordersController implements Initializable {
     }
 
     @FXML
-    protected void placeOrder() {
+    private void placeOrder() {
+        if (via.getValue()==null){
+            Controller.infoBox("Error Select method to send receipt",null,"Error");
+            return;
+        }
          if(orderList.size()>0) {
-             total=0;
+             total=0.0;
              try{
                  int userId=getUserID();
                  //getUserID
                  if (userId != -1) {
                      timeDateOrder = Date.from(Instant.now());
-                     SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss 'Z'");
+                     SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                      ft.setTimeZone(TimeZone.getTimeZone("GMT"));
                      dtOrder=ft.format(timeDateOrder);//Formatted date
                      //Update babylinapp_orders first
-                     Connection connection = DriverManager.getConnection(jdbcController.url, jdbcController.user, jdbcController.password);
+                     Connection connection = DriverManager.getConnection(jdbcController.url);
                      PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO babylinapp_orders(OrderId,UserId,OrderAt) values(?,?,?)");
                      preparedStatement.setString(1, null);
                      preparedStatement.setInt(2, userId);
@@ -206,6 +219,8 @@ public class ordersController implements Initializable {
                          System.out.println("Successful!");
                      else
                          System.out.println("Unsuccessful!");
+                     preparedStatement.close();
+                     connection.close();
                  }
                  //Select last order form babylinapp_orders and update babylinapp_products
                  updateProductOrders();
@@ -227,9 +242,6 @@ public class ordersController implements Initializable {
          else {
              Controller.showAlert(Alert.AlertType.ERROR,order.getScene().getWindow(),"Error | Empty Cart", "Please select a product(s) to purchase");
          }
-//        System.out.println(orderList.get(0).getProductName());
-//        System.out.println(orderList.get(0).getProductQuantity());
-//        System.out.println(orderList.get(0).getProductPrice());
     }
 
 
@@ -242,23 +254,31 @@ public class ordersController implements Initializable {
         else
             p="Product";
         try {
-            Connection connection = DriverManager.getConnection(jdbcController.url,jdbcController.user,jdbcController.password);
+            Connection connection = DriverManager.getConnection(jdbcController.url);
             PreparedStatement preparedStatement = connection.prepareStatement("SELECT OrderId FROM babylinapp_orders WHERE OrderId=?");
             preparedStatement.setInt(1,returnOrderId());
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
                     orderId = resultSet.getInt("OrderId");
             }
+            preparedStatement.close();
+            resultSet.close();
+            connection.close();
             Controller.infoBox("Total Cost: GHC " + total, "Cost of " + p, "Order Number - BC"+orderId);
+            TextInputDialog value = new TextInputDialog("");
+            value.setHeaderText("Amount Given by Customer\n Total Cost:"+total);
+            value.showAndWait();
+            double change =total - NumberFormat.getInstance(Locale.getDefault()).parse(value.getEditor().getText()).doubleValue();
+            Controller.infoBox("Change to be given: GHC"+change,null,"Change");
             createPDF("BC"+orderId,customerName.getSelectionModel().getSelectedItem());
-        } catch (SQLException e) {
-            jdbcController.printSQLException(e);
+        } catch (SQLException | ParseException e) {
+            System.out.println(e);
         }
     }
 
     protected void storeRevenue(){
         try{
-            Connection connection =DriverManager.getConnection(jdbcController.url,jdbcController.user,jdbcController.password);
+            Connection connection =DriverManager.getConnection(jdbcController.url);
             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO babylinapp_revenue values(?,?,?,?)");
             preparedStatement.setString(1,null);
             preparedStatement.setInt(2,returnOrderId());
@@ -267,6 +287,9 @@ public class ordersController implements Initializable {
             boolean result = preparedStatement.execute();
             if (!result) System.out.println("Worked");
             else System.out.println("Falied!");
+            preparedStatement.close();
+            connection.close();
+
         } catch (SQLException e) {
             jdbcController.printSQLException(e);
         }
@@ -275,7 +298,7 @@ public class ordersController implements Initializable {
     protected void updateProductOrders(){
         orderId=returnOrderId();
         try{
-            Connection connection = DriverManager.getConnection(jdbcController.url, jdbcController.user, jdbcController.password);
+            Connection connection = DriverManager.getConnection(jdbcController.url);
             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO babylinapp_product_orders values(?,?,?,?)");
             //noinspection ForLoopReplaceableByForEach
             for (int val=0; val<orderList.size();val++){
@@ -290,6 +313,8 @@ public class ordersController implements Initializable {
                     System.out.println("Not worked");
                 }
             }
+            preparedStatement.close();
+            connection.close();
         } catch (SQLException e) {
             jdbcController.printSQLException(e);
         }
@@ -298,13 +323,14 @@ public class ordersController implements Initializable {
     protected int returnOrderId(){
         int OrderId1=0;
         try {
-            Connection connection = DriverManager.getConnection(jdbcController.url,jdbcController.user,jdbcController.password);
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM babylinapp_orders");
+            Connection connection = DriverManager.getConnection(jdbcController.url);
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT max(OrderID) FROM babylinapp_orders ");
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
-                if (resultSet.last())
                     OrderId1=resultSet.getInt(1);
             }
+            preparedStatement.close();
+            resultSet.close();
             connection.close();
         } catch (SQLException e) {
             jdbcController.printSQLException(e);
@@ -315,7 +341,7 @@ public class ordersController implements Initializable {
 
     protected void placeOrderDB(Integer q, String n){//Update Product Quantity
         try {
-            Connection connection = DriverManager.getConnection(jdbcController.url,jdbcController.user,jdbcController.password);
+            Connection connection = DriverManager.getConnection(jdbcController.url);
             PreparedStatement preparedStatement = connection.prepareStatement(jdbcController.UPDATE_QUERY_PRODUCTS_QUANTITY_SUB);
             preparedStatement.setInt(1,q);//Product Quantity
             preparedStatement.setString(2,n);//Product Name
@@ -326,6 +352,7 @@ public class ordersController implements Initializable {
             else
             System.out.println("Not working");
 //                Controller.showAlert(Alert.AlertType.ERROR,order.getScene().getWindow(),"Error Purchasing Products","There was an error purchasing Bn Natural Foods products");
+            preparedStatement.close();
             connection.close();
         } catch (SQLException e) {
             jdbcController.printSQLException(e);
@@ -341,23 +368,25 @@ public class ordersController implements Initializable {
 
         tableOrder.getItems().remove(tableOrder.getItems().get(rowInTable));
         orderList.remove(orderList.get(rowInTable));
-//        tableOrder.getItems().remove(rowInTable);
-//        System.out.println(tableOrder.getItems().get(rowInTable));
-//        System.out.println(orderList.get(tableOrder.getSelectionModel().getSelectedIndex()).getProductName());
-//        System.out.println(orderList.get(tableOrder.getSelectionModel().getSelectedIndex()).getProductQuantity());
     }
 
 
     @FXML
     protected void addUser() {
+        if(userNameFull.getText().equals("")||email.getText().equals("")||address.getText().equals("")||phone.getText().equals("")){
+            Controller.infoBox("Empty field! Enter some values!",null,"Error");
+            return;
+        }
         try {
-            Connection connection = DriverManager.getConnection(jdbcController.url, jdbcController.user, jdbcController.password);
-            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO babylinapp_users values(?,?,?,?,?)");
+            Connection connection = DriverManager.getConnection(jdbcController.url);
+            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO babylinapp_users values(?,?,?,?,?,?,?)");
             preparedStatement.setString(1,null);
             preparedStatement.setString(2, userNameFull.getText());
             preparedStatement.setString(3,email.getText());
-            preparedStatement.setString(4,address.getText());
-            preparedStatement.setString(5,phone.getText());
+            preparedStatement.setString(4,jdbcController.getHash("123"));
+            preparedStatement.setString(5,address.getText());
+            preparedStatement.setString(6,phone.getText());
+            preparedStatement.setString(7,null);
 
             boolean resultSet = preparedStatement.execute();
             if(!resultSet){
@@ -366,7 +395,8 @@ public class ordersController implements Initializable {
             }else {
                 Controller.infoBox("Error did not add new user!",null,"Error New User");
             }
-
+            preparedStatement.close();
+            connection.close();
         } catch (SQLException e) {
             jdbcController.printSQLException(e);
         }
@@ -414,38 +444,58 @@ public class ordersController implements Initializable {
             System.out.println(document.getNumberOfPages());
             PDPage pdPage = document.getPages().get(0);
             PDPageContentStream pdPageContentStream = new PDPageContentStream(document, pdPage);
+            PDImageXObject pdImage=PDImageXObject.createFromFile(System.getProperty("user.dir")+"\\src\\babylinapp\\assets\\Logo1000.jpg",document);
             pdPageContentStream.beginText();
-            pdPageContentStream.setFont(PDType1Font.TIMES_ROMAN,20);
+            pdPageContentStream.setFont(PDType1Font.TIMES_ROMAN,25);
             pdPageContentStream.setLeading(14.5f);
             pdPageContentStream.newLineAtOffset(25, 725);
-            pdPageContentStream.showText("Products Purchased");
+            pdPageContentStream.showText("Date: "+Date.from(Instant.now()));
+            pdPageContentStream.newLine();
+            pdPageContentStream.newLine();
+            pdPageContentStream.newLine();
+            pdPageContentStream.showText("Product Name | Unit Price | Quantity | Total Price ");
+            pdPageContentStream.newLine();
+            pdPageContentStream.newLine();
+            pdPageContentStream.newLine();
             for (babylinapp.productClass productClass : orderList) {
-                String text1 = "" + productClass.getProductName() + "-" + productClass.getProductPrice() * productClass.getProductQuantity();
+                double value =productClass.getProductPrice()*productClass.getProductQuantity();
+                String text1 = "" + productClass.getProductName() + " | " + productClass.getProductPrice()+ " | " +productClass.getProductQuantity()+ " | "+value ;
+                pdPageContentStream.newLine();
+                pdPageContentStream.newLine();
                 pdPageContentStream.newLine();
                 pdPageContentStream.showText(text1);
             }
             pdPageContentStream.newLine();
-            pdPageContentStream.showText("Total: "+total);
+            pdPageContentStream.showText("------------------------------------------------");
+            pdPageContentStream.newLine();
+            pdPageContentStream.showText("Total:  "+"GHC"+total);
             pdPageContentStream.endText();
+            pdPageContentStream.drawImage(pdImage, 400, 800);
             pdPageContentStream.close();
             document.save(file);
             document.close();
-            sendReceipt(getEmail(),customerName.getSelectionModel().getSelectedItem(),orderId);
+            if (via.getValue().equals("Email")) {
+                sendReceipt(customerName.getSelectionModel().getSelectedItem());
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+
+
     protected String getEmail(){
         String email="";
         try {
-            Connection connection = DriverManager.getConnection(jdbcController.url,jdbcController.user,jdbcController.password);
+            Connection connection = DriverManager.getConnection(jdbcController.url);
             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM babylinapp_users WHERE userName=?");
             preparedStatement.setString(1,customerName.getSelectionModel().getSelectedItem());
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
                     email=resultSet.getString("email");
             }
+            preparedStatement.close();
+            resultSet.close();
             connection.close();
         } catch (SQLException e) {
             jdbcController.printSQLException(e);
@@ -454,40 +504,77 @@ public class ordersController implements Initializable {
         return email;
     }
 
-    protected void sendReceipt(String email,String CustomerName, Integer orderId) {
-        String from ="babylinnaturalhairfoods@gmail.com";
-        String host="localhost";
-        Properties properties = System.getProperties();
-        properties.setProperty("mail.stmp.host", host);
-        Session session = Session.getDefaultInstance(properties);
+    private void sendReceipt(String CustomerName){
+        Dialog<String> dialog = new Dialog<>();
+        PasswordField pwd = new PasswordField();
+        pwd.setText("Baby@123fafnova#123");
+        HBox content = new HBox();
+        content.setAlignment(Pos.CENTER_LEFT);
+        content.setSpacing(10);
+        content.getChildren().addAll(new Label("Enter password:"), pwd);
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+        dialog.getDialogPane().setContent(content);
+        System.out.println("Hello");
+        dialog.showAndWait();
+                send(pwd.getText(),CustomerName);
+                System.out.println("Hello");
+    }
 
+    private void send(String pass, String CustomerName){
+        String from ="babylinnaturalhairfoods@gmail.com";
+        Properties properties = System.getProperties();
+        properties.put("mail.smtp.auth","true");
+        properties.put("mail.smtp.starttls.enable", "true");
+        properties.put("mail.smtp.starttls","true");
+        properties.put("mail.smtp.ssl.trust", "smtp.gmail.com");
+        properties.put("mail.smtp.host","smtp.gmail.com");
+        properties.put("mail.stmp.port","587");
+        Session session = Session.getDefaultInstance(properties, new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(from, pass);
+            }
+        });
+        Message message = prepareMessage(session,from,CustomerName);
+        assert message != null;
+        try {
+            Transport.send(message);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+        Controller.infoBox("Sent receipt via Email!",null,"Purchase Successful!");
+
+    }
+
+    private Message prepareMessage(Session session, String from, String customerName) {
         try {
             MimeMessage message = new MimeMessage(session);
             message.setFrom(new InternetAddress(from));
-            message.addRecipient(Message.RecipientType.TO,new InternetAddress(email));
-            message.setSubject("Purchase Order:");
+            message.addRecipient(Message.RecipientType.TO,new InternetAddress(getEmail()));
+            message.setSubject("Purchase Order:"+orderId+"-Babylin Consult");
             BodyPart messageBodyPart = new MimeBodyPart();
-            messageBodyPart.setText("Your receipt bro");
+            messageBodyPart.setText("Thank you for purchasing BN natural hair foods");
             Multipart multipart = new MimeMultipart();
             multipart.addBodyPart(messageBodyPart);
+
             messageBodyPart = new MimeBodyPart();
-            String fileName=CustomerName+"-BC"+orderId+".pdf";
+            String fileName="C:\\Users\\Gerald\\IdeaProjects\\babylin\\src\\babylinapp\\pdfs\\"+customerName+"-BC"+orderId+".pdf";
             DataSource source= new FileDataSource(fileName);
             messageBodyPart.setDataHandler(new DataHandler(source));
-            messageBodyPart.setFileName(fileName);
+            messageBodyPart.setFileName(source.getName());
             multipart.addBodyPart(messageBodyPart);
             message.setContent(multipart);
-            Transport.send(message);
-            Controller.infoBox("Sent receipt via Email!",null,"Purchase Successful!");
+            return message;
         } catch (MessagingException e) {
-            Controller.infoBox("Receipt not sent!",null,"Error");
-            jdbcController.printMessagingException(e);
+            Controller.errBox(e.getMessage()+"\n"+e.getLocalizedMessage(),"Error email not sent!","Error!");
         }
+        return null;
     }
-        @Override
+
+    @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
             try {
-                Connection connection = DriverManager.getConnection(jdbcController.url, jdbcController.user, jdbcController.password);
+                Connection connection = DriverManager.getConnection(jdbcController.url);
                 PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM babylinapp_products");
 
                 ResultSet resultSet = preparedStatement.executeQuery();
@@ -502,17 +589,22 @@ public class ordersController implements Initializable {
                             resultSet.getString("productDescription")
                     )));
                 }
+                preparedStatement.close();
+                resultSet.close();
+                connection.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
             if(jdbcController.userType.equals("Employee")){
                     try{
-                        Connection connection = DriverManager.getConnection(jdbcController.url, jdbcController.user, jdbcController.password);
+                        Connection connection = DriverManager.getConnection(jdbcController.url);
                         PreparedStatement preparedStatement =connection.prepareStatement("SELECT * FROM babylinapp_users");
                         ResultSet resultSet =preparedStatement.executeQuery();
                         while (resultSet.next()){
                             userList.add(resultSet.getString("userName"));
                         }
+                        preparedStatement.close();
+                        resultSet.close();
                         connection.close();
                         customerName.getItems().addAll(userList);
                     } catch (SQLException e) {
@@ -521,13 +613,15 @@ public class ordersController implements Initializable {
     }
         else if(jdbcController.userType.equals("Customer")){
             try {
-                Connection connection = DriverManager.getConnection(jdbcController.url, jdbcController.user, jdbcController.password);
+                Connection connection = DriverManager.getConnection(jdbcController.url);
                 PreparedStatement preparedStatement =connection.prepareStatement("SELECT * FROM babylinapp_users WHERE email=?");
                 preparedStatement.setString(1,jdbcController.emailUniversal);
                 ResultSet resultSet =preparedStatement.executeQuery();
                 while (resultSet.next()){
                     userList.add(resultSet.getString("userName"));
                 }
+                preparedStatement.close();
+                resultSet.close();
                 connection.close();
                 customerName.getItems().addAll(userList);
             } catch (SQLException e) {

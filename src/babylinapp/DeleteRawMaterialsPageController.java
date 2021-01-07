@@ -14,18 +14,22 @@ import java.util.ResourceBundle;
 public class DeleteRawMaterialsPageController implements Initializable {
 
     @FXML
-    protected ComboBox<String> rawMaterialCombo;
+    private ComboBox<String> rawMaterialCombo;
 
     @FXML
-    protected Button delete;
+    private Button delete;
 
     @FXML
-    protected Button cancel;
+    private Button cancel;
 
     @FXML
-    protected void deleteStock(){
+    private void deleteStock(){
+        if (rawMaterialCombo.getValue().equals("")){
+            Controller.infoBox("Empty field!",null,"Error");
+            return;
+        }
         try {
-            Connection connection = DriverManager.getConnection(jdbcController.url, jdbcController.user, jdbcController.password);
+            Connection connection = DriverManager.getConnection(jdbcController.url);
             PreparedStatement preparedStatement = connection.prepareStatement(jdbcController.DELETE_QUERY_RAW_DELETE);
             preparedStatement.setString(1,rawMaterialCombo.getValue());
             int resultSet = preparedStatement.executeUpdate();
@@ -42,15 +46,15 @@ public class DeleteRawMaterialsPageController implements Initializable {
     }
 
     @FXML
-    protected void cancel() throws IOException {
+    private void cancel() throws IOException {
         Stage stage = (Stage) cancel.getScene().getWindow();
-        new Menu().start(stage);
+        new rawMaterials().start(stage);
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try{
-            Connection connection = DriverManager.getConnection(jdbcController.url,jdbcController.user,jdbcController.password);
+            Connection connection = DriverManager.getConnection(jdbcController.url);
             PreparedStatement preparedStatement = connection.prepareStatement(jdbcController.SELECT_QUERY_RAW);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){

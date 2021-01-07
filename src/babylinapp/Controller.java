@@ -2,14 +2,24 @@ package babylinapp;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
 import java.io.IOException;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 
 public class Controller {
     @FXML
-    protected ComboBox<String> u_type_register;
+    private BorderPane imageBorderPane;
+    @FXML
+    private AnchorPane main;
+    @FXML
+    private ComboBox<String> u_type_register;
     //Login Input
     @FXML
     private TextField emailIdField;
@@ -40,16 +50,16 @@ public class Controller {
     private DatePicker DOB;
 
     @FXML
-    protected ComboBox<String> u_type_login;
+    private ComboBox<String> u_type_login;
 
     @FXML
     private Button submitButtonRegister;
 
     @FXML
-    public TextField address;
+    private TextField address;
 
     @FXML
-    public TextField number;
+    private TextField number;
 
     @FXML
     private Label registerTxtBtn;
@@ -72,7 +82,7 @@ public class Controller {
                     "Please enter a password");
             return;
         }
-        if (u_type_login.getValue().isEmpty()){
+        if (u_type_login.getValue()== null){
             showAlert(Alert.AlertType.ERROR, owner, "Form Error!",
                     "Please select user type.");
             return;
@@ -93,13 +103,13 @@ public class Controller {
             menu.start(stage);
         }
     }
-
-    public void register() throws IOException {
+    @FXML
+    private void register() throws IOException {
         Stage stage;
         Window owner =submitButtonRegister.getScene().getWindow();
         String fn = fnRegister.getText();
         String ln = lnRegister.getText();
-        String dob =""+DOB.getValue();
+        LocalDate dob =DOB.getValue();
         String us_type=u_type_register.getValue();
         String addr=address.getText();
         String phone=number.getText();
@@ -107,37 +117,43 @@ public class Controller {
         String pwd=passwordFieldRegister.getText();
         String pwd1=passwordFieldRegister1.getText();
         //Checks if inputs are empty
-        if(fn.isEmpty()){
+        if(fnRegister.getText().equals("")){
             showAlert(Alert.AlertType.ERROR,owner,"FORM ERROR!","Please Enter Your First Name");
             return;
         }
 
-        if (ln.isEmpty()){
+        if (lnRegister.getText().equals("")){
             showAlert(Alert.AlertType.ERROR,owner,"FORM ERROR!","Please Enter Your Last Name");
             return;
         }
 
-        if(dob.isEmpty()){
+        if(DOB.getValue() == null){
             showAlert(Alert.AlertType.ERROR,owner,"FORM ERROR!","Please Enter Your Date of Birth");
             return;
         }
-        if (us_type.isEmpty()){
+        if(Date.from(Instant.now()).compareTo((java.sql.Date.from(DOB.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant())))<0){
+            showAlert(Alert.AlertType.ERROR,owner,"FORM ERROR!","Enter the right date of birth");
+            return;
+        }
+        if (u_type_register.getValue() == null){
             showAlert(Alert.AlertType.ERROR,owner,"FORM ERROR!","Please Enter Your User Type");
             return;
         }
-        if(email.isEmpty()){
+        if(emailIdFieldRegister.getText().equals("")){
             showAlert(Alert.AlertType.ERROR,owner,"FORM ERROR!", "Please Enter Your Email");
             return;
         }
-        if(pwd.isEmpty()){
+        if(passwordFieldRegister.getText().equals("")){
             showAlert(Alert.AlertType.ERROR,owner,"FORM ERROR!","Please Enter Your Password");
         }
-        if(pwd1.isEmpty()){
-            showAlert(Alert.AlertType.ERROR,owner,"FORM ERROR!","Plase Enter Your Password");
+        if(passwordFieldRegister1.getText().equals("")){
+            showAlert(Alert.AlertType.ERROR,owner,"FORM ERROR!","Please Enter Your Password");
         }
 
-        if(pwd.equals(pwd1))
+        if(pwd.equals(pwd1)) {
             System.out.println(passwordFieldRegister.getText());
+            System.out.println(DOB.getValue().toString());
+        }
         else {
             showAlert(Alert.AlertType.ERROR, owner, "FORM ERROR!", "Please Enter Valid Password");
             return;
@@ -146,7 +162,7 @@ public class Controller {
         boolean flag=jdbcController.register(fn,ln,dob,us_type,addr,phone,email,pwd,pwd1);
 
         if (!flag) {
-            infoBox("Please there is an error", null, "Failed");
+            infoBox("User registered already", null, "Failed");
         } else {
             infoBox("Registration Successful!", null, "Success");
             stage = (Stage) submitButtonRegister.getScene().getWindow();
@@ -162,6 +178,16 @@ public class Controller {
         alert.setContentText(infoMessage);
         alert.setTitle(title);
         alert.setHeaderText(headerText);
+        alert.showAndWait();
+    }
+
+    public static void errBox(String infoMessage, String headerText, String title) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(headerText);
+        TextArea txt = new TextArea();
+        txt.setText(infoMessage);
+        alert.getDialogPane().setExpandableContent(txt);
         alert.showAndWait();
     }
 

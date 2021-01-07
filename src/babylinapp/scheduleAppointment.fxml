@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.collections.FXCollections?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-
+<?import javafx.scene.layout.AnchorPane?>
+<?import java.lang.String?>
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="babylinapp.scheduleAppointmentController">
     <TabPane fx:id="tabPane" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE">
         <Tab fx:id="tabScheduledAppointment" text="Schedule">
@@ -10,14 +11,21 @@
                 <Label fx:id="user" layoutX="40.0" layoutY="47.0" prefHeight="46.0" prefWidth="111.0" text="Name:" />
                 <Label fx:id="id" layoutX="40.0" layoutY="104.0" prefHeight="46.0" prefWidth="111.0" text="User Id" />
                 <DatePicker fx:id="dateSchedule" layoutX="182.0" layoutY="54.0" prefHeight="26.0" prefWidth="190.0" promptText="Select Date" />
-                <Label layoutX="185.0" layoutY="150.0" prefHeight="17.0" prefWidth="59.0" text="Hour" />
-                <Spinner fx:id="hourTime" layoutX="183.0" layoutY="173.0" prefHeight="25.0" prefWidth="75.0" />
-                <Label layoutX="277.0" layoutY="177.0" prefHeight="17.0" prefWidth="13.0" text=" :" />
-                <Label layoutX="300.0" layoutY="150.0" prefHeight="17.0" prefWidth="59.0" text="Minute" />
-                <Spinner fx:id="minuteTime" layoutX="302.0" layoutY="173.0" prefHeight="25.0" prefWidth="71.0" />
+<!--                <Label layoutX="185.0" layoutY="150.0" prefHeight="17.0" prefWidth="59.0" text="Hour" />-->
+<!--                <Spinner fx:id="hourTime" layoutX="183.0" layoutY="173.0" prefHeight="25.0" prefWidth="75.0" />-->
+<!--                <Label layoutX="277.0" layoutY="177.0" prefHeight="17.0" prefWidth="13.0" text=" :" />-->
+<!--                <Label layoutX="300.0" layoutY="150.0" prefHeight="17.0" prefWidth="59.0" text="Minute" />-->
+                <ComboBox layoutX="183.0" layoutY="115.0" prefHeight="25.0" prefWidth="187.0" fx:id="timeBox" promptText="Set TIme">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="10:00am - 12:00pm" />
+                            <String fx:value="3:00pm - 5:00pm" />
+                        </FXCollections>
+                    </items>
+                </ComboBox>
+<!--                <Spinner fx:id="minuteTime" layoutX="302.0" layoutY="173.0" prefHeight="25.0" prefWidth="71.0" />-->
                 <Button fx:id="schedule" layoutX="183.0" layoutY="222.0" onAction="#book" prefHeight="28.0" prefWidth="194.0" text="Book" />
                 <Button fx:id="back" layoutX="182.0" layoutY="270.0" mnemonicParsing="false" onAction="#goBack" prefHeight="25.0" prefWidth="196.0" text="Back" />
-<!--            <Spinner fx:id="timeSpinnerSchedule" layoutX="184.0" layoutY="105.0" prefHeight="25.0" prefWidth="185.0" />-->
             </AnchorPane>
         </Tab>
         <Tab fx:id="tabScheduledAppointments" text="Scheduled Appointments">

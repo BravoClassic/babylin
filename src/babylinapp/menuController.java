@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -14,13 +15,12 @@ import java.util.ResourceBundle;
 public class menuController implements Initializable {
 
     @FXML
+    private AnchorPane menuPane;
+    @FXML
     private Button appointmentButton;
 
     @FXML
     private Label welcome;
-
-    @FXML
-    private Button settings;
 
     @FXML
     private Button productsButton;
@@ -38,32 +38,38 @@ public class menuController implements Initializable {
     private Button logOutButton;
 
 
-    public void displayOrders() throws IOException{
+    @FXML
+    private void displayOrders() throws IOException{
         Stage stage= (Stage) ordersButton.getScene().getWindow();
         new orders().start(stage);
     }
 
-    public void displayAppointments() throws IOException {
+    @FXML
+    private void displayAppointments() throws IOException {
         Stage stage = (Stage) appointmentButton.getScene().getWindow();
         new scheduleAppointment().start(stage);
     }
 
-    public void displayStocks() throws IOException{
+    @FXML
+    private void displayStocks() throws IOException{
         Stage stage = (Stage) rawMaterialsButton.getScene().getWindow();
         new rawMaterials().start(stage);
     }
 
-    public void displayReports() throws IOException{
+    @FXML
+    private void displayReports() throws IOException{
         Stage stage = (Stage) reportsButton.getScene().getWindow();
         new reports().start(stage);
     }
 
-    public void displayProduct() throws IOException {
+    @FXML
+    private void displayProduct() throws IOException {
         Stage stage = (Stage) productsButton.getScene().getWindow();
         new products().start(stage);
     }
 
-    public void logOut() throws Exception {
+    @FXML
+    private void logOut() throws Exception {
         Stage stage=(Stage) logOutButton.getScene().getWindow();
         new Main().start(stage);
     }
@@ -72,9 +78,9 @@ public class menuController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try{
-            Connection connection= DriverManager.getConnection(jdbcController.url,jdbcController.user,jdbcController.password);
+            Connection connection= DriverManager.getConnection(jdbcController.url);
             if(jdbcController.userType.equals("Customer")) {
-                PreparedStatement preparedStatement = connection.prepareStatement(jdbcController.SELECT_CUST_EMAIL);
+                PreparedStatement preparedStatement = connection.prepareStatement(jdbcController.SELECT_CUST_QUERY_VALIDATE);
                 preparedStatement.setString(1,jdbcController.emailUniversal);
                 ResultSet resultSet = preparedStatement.executeQuery();
                 if (resultSet.next()) {

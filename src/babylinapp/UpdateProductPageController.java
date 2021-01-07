@@ -11,55 +11,59 @@ import java.sql.*;
 import java.util.ResourceBundle;
 
 public class UpdateProductPageController implements Initializable {
-    public TextField productName;
-    public TextField productQuantity;
-    public TextField productUnitPrice;
-    public TextArea productDescription;
     @FXML
-    protected ComboBox<String> productList;
+    private TextField productName;
+    @FXML
+    private TextField productQuantity;
+    @FXML
+    private TextField productUnitPrice;
+    @FXML
+    private TextArea productDescription;
+    @FXML
+    private ComboBox<String> productList;
+    @FXML
+    private Button cancel;
+    @FXML
+    private Button update;
+
 
     @FXML
-    protected Button cancel;
-
-    @FXML
-    protected Button update;
-
-//    private SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, 0);
-
-
-    @FXML
-    protected void update() throws SQLException {
-        Connection connection = DriverManager.getConnection(jdbcController.url,jdbcController.user,jdbcController.password);
-        PreparedStatement preparedStatement = connection.prepareStatement(jdbcController.UPDATE_QUERY_PRODUCTS_ALL);
-        preparedStatement.setString(1,null);
-        preparedStatement.setString(2,productName.getText());
-        preparedStatement.setInt(3,Integer.parseInt(productUnitPrice.getText()));
-        preparedStatement.setInt(4,Integer.parseInt(productQuantity.getText()));
-        preparedStatement.setString(5,productDescription.getText());
-        preparedStatement.setString(6,productList.getValue());
-        int resultSet = preparedStatement.executeUpdate();
-
-        if (resultSet==1){
-            Controller.infoBox("Successfully updated "+productList.getValue(),null,"Success");
-        }else {
-            Controller.infoBox("Failed to update "+productList.getValue(),null,"Failed!");
+    private void update()  {
+        try {
+            Connection connection = DriverManager.getConnection(jdbcController.url);
+            PreparedStatement preparedStatement = connection.prepareStatement(jdbcController.UPDATE_QUERY_PRODUCTS_ALL);
+            preparedStatement.setString(1, productName.getText());
+            preparedStatement.setDouble(2, Double.parseDouble(productUnitPrice.getText()));
+            preparedStatement.setInt(3, Integer.parseInt(productQuantity.getText()));
+            preparedStatement.setString(4, productDescription.getText());
+            preparedStatement.setString(5, productList.getValue());
+            preparedStatement.executeUpdate();
+                Controller.infoBox("Product Updated!",null,"Success");
+            preparedStatement.close();
+            connection.close();
+        }catch(SQLException e){
+            Controller.errBox("Err Code:"+e.getErrorCode()+"\n Message:"+e.getMessage()+"\n"+e.getCause(),"Error with Update Function","Error");
+            jdbcController.printSQLException(e);
         }
     }
 
     @FXML
-    protected void display(){
+    private void display(){
 
         try {
-            Connection connection = DriverManager.getConnection(jdbcController.url,jdbcController.user,jdbcController.password);
+            Connection connection = DriverManager.getConnection(jdbcController.url);
             PreparedStatement preparedStatement = connection.prepareStatement(jdbcController.SELECT_QUERY_PRODUCTS_ADD);
             preparedStatement.setString(1,productList.getValue());
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 productName.setText(productList.getValue());
                 productQuantity.setText(Integer.toString(resultSet.getInt("quantity")));
-                productUnitPrice.setText(Integer.toString(resultSet.getInt("unitPrice")));
+                productUnitPrice.setText(Double.toString(resultSet.getDouble("unitPrice")));
                 productDescription.setText(resultSet.getString("productDescription"));
             }
+            preparedStatement.close();
+            resultSet.close();
+            connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -68,7 +72,7 @@ public class UpdateProductPageController implements Initializable {
 
 
     @FXML
-    protected void goBack() throws IOException {
+    private void goBack() throws IOException {
         productName.setText("");
         productQuantity.setText("");
         productUnitPrice.setText("");
@@ -77,9 +81,9 @@ public class UpdateProductPageController implements Initializable {
         new products().start(stage);
     }
     @FXML
-    protected void viewProduct() throws SQLException {
+    private void viewProduct() throws SQLException {
 
-        Connection connection = DriverManager.getConnection(jdbcController.url, jdbcController.user, jdbcController.password);
+        Connection connection = DriverManager.getConnection(jdbcController.url);
         PreparedStatement preparedStatement = connection.prepareStatement(jdbcController.SELECT_QUERY_PRODUCTS);
 
         ResultSet resultSet = preparedStatement.executeQuery();
@@ -90,6 +94,8 @@ public class UpdateProductPageController implements Initializable {
 //            String result3 = resultSet.getString("productDescription");
             productList.getItems().add(result);
         }
+        preparedStatement.close();
+        resultSet.close();
         connection.close();
 
     }

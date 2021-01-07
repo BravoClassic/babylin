@@ -11,24 +11,23 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
-import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class addProductPageController implements Initializable {
     @FXML
-    Button add;
+    private Button add;
 
     @FXML
-    Button back;
+    private Button back;
 
     @FXML
-    ComboBox<String> productList;
+    private ComboBox<String> productList;
 
     @FXML
-    TextField addProductQuantity;
+    private TextField addProductQuantity;
 
-
-    public void increaseQuantity() {
+    @FXML
+    private void increaseQuantity() {
         int val;
         try {
            val= Integer.parseInt(addProductQuantity.getText());
@@ -46,12 +45,11 @@ public class addProductPageController implements Initializable {
         }
 
         try {
-            Connection connection = DriverManager.getConnection(jdbcController.url, jdbcController.user, jdbcController.password);
+            Connection connection = DriverManager.getConnection(jdbcController.url);
             PreparedStatement preparedStatement = connection.prepareStatement(jdbcController.UPDATE_QUERY_PRODUCTS_QUANTITY);
             preparedStatement.setString(2, productList.getValue());
             preparedStatement.setInt(1, val);
             boolean resultSet = preparedStatement.execute();
-//        System.out.println(resultSet);
             if (!resultSet) {
                 Controller.infoBox("Added more " + productList.getValue(), null, "Success!");
             } else {
@@ -70,9 +68,8 @@ public class addProductPageController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        Connection connection = null;
         try {
-            connection = DriverManager.getConnection(jdbcController.url, jdbcController.user, jdbcController.password);
+            Connection connection = DriverManager.getConnection(jdbcController.url);
             PreparedStatement preparedStatement = connection.prepareStatement(jdbcController.SELECT_QUERY_PRODUCTS_PRODUCT_NAME);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
@@ -80,13 +77,6 @@ public class addProductPageController implements Initializable {
             }
 
 
-        } catch (SQLException e) {
-            jdbcController.printSQLException(e);
-        }
-
-
-        try {
-            Objects.requireNonNull(connection).close();
         } catch (SQLException e) {
             jdbcController.printSQLException(e);
         }
