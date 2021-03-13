@@ -141,6 +141,7 @@ public class contactPageController implements Initializable {
 
     @FXML
     private void updateContact() throws IOException {
+        jdbcController jdbcController = new jdbcController();
         if (fullName.getText().equals("")) {
             Controller.errBox("Enter Full Name!", null, "Error");
             return;
@@ -149,8 +150,16 @@ public class contactPageController implements Initializable {
             Controller.errBox("Enter Date of Birth!", null, "Error");
             return;
         }
+        if (jdbcController.checkEmail(email.getText().trim(),"Customer")){
+            Controller.errBox("Email exists already!",null,"Error");
+            return;
+        }
         if (email.getText().equals("")) {
             Controller.errBox("Enter Email!", null, "Error");
+            return;
+        }
+        if (!Controller.validEmail(email.getText().trim())){
+            Controller.errBox("Invalid email format",null,"Error");
             return;
         }
         if (address.getText().equals("")) {
@@ -170,8 +179,8 @@ public class contactPageController implements Initializable {
             String number = phone.getText().trim();
 //            System.out.println(birthDate);
             try {
-                Connection connection = DriverManager.getConnection(jdbcController.url);
-                PreparedStatement preparedStatement = connection.prepareStatement(jdbcController.UPDATE_CUST);
+                Connection connection = DriverManager.getConnection(babylinapp.jdbcController.url);
+                PreparedStatement preparedStatement = connection.prepareStatement(babylinapp.jdbcController.UPDATE_CUST);
                 preparedStatement.setString(1, name);
                 preparedStatement.setString(2, String.valueOf(birthDate));
                 preparedStatement.setString(3, emailAddress);
@@ -183,7 +192,7 @@ public class contactPageController implements Initializable {
                 preparedStatement.close();
                 connection.close();
             } catch (SQLException e) {
-                jdbcController.printSQLException(e);
+                babylinapp.jdbcController.printSQLException(e);
             }
         }else if(pwdChange.isSelected()){
             if (pwd.getText().equals("")) {
@@ -196,10 +205,10 @@ public class contactPageController implements Initializable {
             String addressDetails = address.getText().trim();
             String number = phone.getText().trim();
             String pass =pwd.getText();
-            String hashedPwd = jdbcController.getHash(pass);
+            String hashedPwd = babylinapp.jdbcController.getHash(pass);
             try {
-                Connection connection = DriverManager.getConnection(jdbcController.url);
-                PreparedStatement preparedStatement = connection.prepareStatement(jdbcController.UPDATE_CUST_PWD);
+                Connection connection = DriverManager.getConnection(babylinapp.jdbcController.url);
+                PreparedStatement preparedStatement = connection.prepareStatement(babylinapp.jdbcController.UPDATE_CUST_PWD);
                 preparedStatement.setString(1, name);
                 preparedStatement.setString(2, String.valueOf(birthDate));
                 preparedStatement.setString(3, emailAddress);
@@ -212,7 +221,7 @@ public class contactPageController implements Initializable {
                 preparedStatement.close();
                 connection.close();
             } catch (SQLException e) {
-                jdbcController.printSQLException(e);
+                babylinapp.jdbcController.printSQLException(e);
             }
 
         }
