@@ -197,6 +197,7 @@ public class ordersController implements Initializable {
             Controller.infoBox("Error Select method to send receipt",null,"Error");
             return;
         }
+
          if(orderList.size()>0) {
              total=0.0;
              try{
@@ -373,32 +374,38 @@ public class ordersController implements Initializable {
 
     @FXML
     protected void addUser() {
+        jdbcController jdbc = new jdbcController();
+        String newUserEmail = email.getText();
         if(userNameFull.getText().equals("")||email.getText().equals("")||address.getText().equals("")||phone.getText().equals("")){
-            Controller.infoBox("Empty field! Enter some values!",null,"Error");
+            Controller.infoBox("Empty field(s)! Enter some values!",null,"Error");
             return;
         }
-        try {
-            Connection connection = DriverManager.getConnection(jdbcController.url);
-            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO babylinapp_users values(?,?,?,?,?,?,?)");
-            preparedStatement.setString(1,null);
-            preparedStatement.setString(2, userNameFull.getText());
-            preparedStatement.setString(3,email.getText());
-            preparedStatement.setString(4,jdbcController.getHash("123"));
-            preparedStatement.setString(5,address.getText());
-            preparedStatement.setString(6,phone.getText());
-            preparedStatement.setString(7,null);
+        if (jdbc.checkEmail(newUserEmail,"Customer")) {
+            try {
+                Connection connection = DriverManager.getConnection(jdbcController.url);
+                PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO babylinapp_users values(?,?,?,?,?,?,?)");
+                preparedStatement.setString(1, null);
+                preparedStatement.setString(2, userNameFull.getText());
+                preparedStatement.setString(3, email.getText());
+                preparedStatement.setString(4, jdbcController.getHash("123"));
+                preparedStatement.setString(5, address.getText());
+                preparedStatement.setString(6, phone.getText());
+                preparedStatement.setString(7, null);
 
-            boolean resultSet = preparedStatement.execute();
-            if(!resultSet){
-                customerName.getItems().add(userNameFull.getText());
-                Controller.infoBox("Added New User!",null,"New User");
-            }else {
-                Controller.infoBox("Error did not add new user!",null,"Error New User");
+                boolean resultSet = preparedStatement.execute();
+                if (!resultSet) {
+                    customerName.getItems().add(userNameFull.getText());
+                    Controller.infoBox("Added New User!", null, "New User");
+                } else {
+                    Controller.infoBox("Error did not add new user!", null, "Error New User");
+                }
+                preparedStatement.close();
+                connection.close();
+            } catch (SQLException e) {
+                jdbcController.printSQLException(e);
             }
-            preparedStatement.close();
-            connection.close();
-        } catch (SQLException e) {
-            jdbcController.printSQLException(e);
+        }else{
+            Controller.errBox("User registered already!",null,"Error!");
         }
     }
 
@@ -507,7 +514,7 @@ public class ordersController implements Initializable {
     private void sendReceipt(String CustomerName){
         Dialog<String> dialog = new Dialog<>();
         PasswordField pwd = new PasswordField();
-        pwd.setText("Baby@123fafnova#123");
+        pwd.setText("babylin@123");
         HBox content = new HBox();
         content.setAlignment(Pos.CENTER_LEFT);
         content.setSpacing(10);
@@ -517,11 +524,11 @@ public class ordersController implements Initializable {
         System.out.println("Hello");
         dialog.showAndWait();
                 send(pwd.getText(),CustomerName);
-                System.out.println("Hello");
+//                System.out.println("Hello");
     }
 
     private void send(String pass, String CustomerName){
-        String from ="babylinnaturalhairfoods@gmail.com";
+        String from ="reply.babylin@gmail.com";
         Properties properties = System.getProperties();
         properties.put("mail.smtp.auth","true");
         properties.put("mail.smtp.starttls.enable", "true");
@@ -540,7 +547,7 @@ public class ordersController implements Initializable {
         try {
             Transport.send(message);
         } catch (MessagingException e) {
-            e.printStackTrace();
+            jdbcController.printMessagingException(e);
         }
         Controller.infoBox("Sent receipt via Email!",null,"Purchase Successful!");
 

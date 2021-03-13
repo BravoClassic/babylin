@@ -59,9 +59,9 @@ public class scheduleAppointmentController implements Initializable {
             Connection connection = DriverManager.getConnection(jdbcController.url);
             PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(*) FROM babylinapp_appointments WHERE userId=? and DateBooked=? ");
             preparedStatement.setInt(1, userID);
-            preparedStatement.setDate(2, Date.valueOf(dateSchedule.getValue()));
+            preparedStatement.setString(2, String.valueOf(dateSchedule.getValue()));
             ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
+            while (resultSet.next()) {
                 if (resultSet.getInt(1) == 1) {
                     Controller.infoBox("Change Date! Date already booked", null, "Error");
                     return true;
@@ -77,7 +77,7 @@ public class scheduleAppointmentController implements Initializable {
         try {
             Connection connection = DriverManager.getConnection(jdbcController.url);
             PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(*) FROM babylinapp_appointments WHERE DateBooked=? and Time=?");
-            preparedStatement.setDate(1, Date.valueOf(dateSchedule.getValue()));
+            preparedStatement.setString(1, String.valueOf(dateSchedule.getValue()));
             preparedStatement.setString(2,timeBox.getValue());
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -111,14 +111,10 @@ public class scheduleAppointmentController implements Initializable {
         }
         boolean appoint = checkAppointment();
         if (appoint){
+//            System.out.println("Hey there!");
             return;
         }
-//        timeSchedule = LocalTime.of(hourTime.getValue(), minuteTime.getValue(), 0);
-//        dateTime = LocalDateTime.of(dateSchedule.getValue(), timeSchedule);
-//        SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//        String dt = ft.format(Date.from(dateTime.toInstant(ZoneOffset.UTC)));
 
-//        Controller.infoBox("Time is: " + dt, null, "Time");
         try {
             Connection connection = DriverManager.getConnection(jdbcController.url);
             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO babylinapp_appointments VALUES(?,?,?,?)");
@@ -146,7 +142,7 @@ public class scheduleAppointmentController implements Initializable {
             preparedStatement.setInt(1, userID);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                java.util.Date dateResult=  new SimpleDateFormat("yyyy-mm-dd").parse(resultSet.getString(3));
+                java.util.Date dateResult=  new SimpleDateFormat("yyyy-MM-dd").parse(resultSet.getString(3));
                 appointmentListTable.add(new appointmentClass(
                         resultSet.getInt(1),
                         resultSet.getInt(2),
@@ -226,7 +222,7 @@ public class scheduleAppointmentController implements Initializable {
                 preparedStatement.setInt(1, userID);
                 ResultSet resultSet = preparedStatement.executeQuery();
                 while (resultSet.next()){
-                    java.util.Date dateResult= new SimpleDateFormat("yyyy-mm-dd").parse(resultSet.getString(3));
+                    java.util.Date dateResult= new SimpleDateFormat("yyyy-MM-dd").parse(resultSet.getString(3));
                     appointmentListTable.add(new appointmentClass(
                            resultSet.getInt(1),
                            resultSet.getInt(2),

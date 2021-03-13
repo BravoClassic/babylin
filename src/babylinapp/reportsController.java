@@ -73,7 +73,7 @@ public class reportsController {
         if ("Daily".equals(comboBoxReportType.getValue()) && revenue.isSelected() ) {
             try {
                 Connection connection = DriverManager.getConnection(jdbcController.url);
-                PreparedStatement preparedStatement = connection.prepareStatement("SELECT date(RevenueDate), sum(Amount) FROM babylinapp_revenue WHERE RevenueDate => ? AND RevenueDate =< ? group by date(RevenueDate)");
+                PreparedStatement preparedStatement = connection.prepareStatement("SELECT date(RevenueDate), sum(Amount) FROM babylinapp_revenue WHERE RevenueDate >= ? AND RevenueDate <= ? group by date(RevenueDate)");
                 preparedStatement.setDate(1, java.sql.Date.valueOf(startDate.getValue()));
                 preparedStatement.setDate(2, java.sql.Date.valueOf(endDate.getValue()));
                 ResultSet resultSet = preparedStatement.executeQuery();
@@ -97,7 +97,7 @@ public class reportsController {
                         false);
                 CategoryAxis categoryAxis = jFreeChartLine.getCategoryPlot().getDomainAxis();
 //                    categoryAxis.setTickUnit(new NumberTickUnit(60));
-                int width = 800;
+                int width = 600;
                 int height = 480;
                 long reportTimeGenerated = LocalDateTime.now().toInstant(ZoneOffset.UTC).getEpochSecond();
                 File file = new File(System.getProperty("user.dir") + "\\src\\babylinapp\\reports\\chart.png");
@@ -113,22 +113,20 @@ public class reportsController {
         }else if ("Daily".equals(comboBoxReportType.getValue()) && products.isSelected()){
             try {
                 Connection connection = DriverManager.getConnection(jdbcController.url);
-                PreparedStatement preparedStatement = connection.prepareStatement("SELECT date(RevenueDate), sum(Amount) FROM babylinapp_revenue WHERE RevenueDate => ? AND RevenueDate =< ? group by date(RevenueDate)");
-                preparedStatement.setDate(1, java.sql.Date.valueOf(startDate.getValue()));
-                preparedStatement.setDate(2, java.sql.Date.valueOf(endDate.getValue()));
+                PreparedStatement preparedStatement = connection.prepareStatement("SELECT productId, sum(quantity) FROM babylinapp_product_orders group by date(productId)");
                 ResultSet resultSet = preparedStatement.executeQuery();
                 DefaultCategoryDataset line_chart_chart = new DefaultCategoryDataset();
                 while (resultSet.next()) {
                     line_chart_chart.addValue(
                             resultSet.getDouble(2),
                             "Revenue",
-                            java.sql.Date.valueOf(resultSet.getString(1)).toLocalDate().getMonth() + "/" + java.sql.Date.valueOf(resultSet.getString(1)).toLocalDate().getDayOfMonth()
+                            resultSet.getString(1)
                     );
                 }
 
                 JFreeChart jFreeChartLine = ChartFactory.createLineChart(
-                        "Products For " + startDate.getValue() + " to " + endDate.getValue(),
-                        "Each day from " + startDate.getValue() + " to " + endDate.getValue(),
+                        "Products Sold",
+                        "Product",
                         "Quantity Purchased",
                         line_chart_chart,
                         PlotOrientation.VERTICAL,
@@ -137,7 +135,7 @@ public class reportsController {
                         false);
                 CategoryAxis categoryAxis = jFreeChartLine.getCategoryPlot().getDomainAxis();
 //                    categoryAxis.setTickUnit(new NumberTickUnit(60));
-                int width = 800;
+                int width = 600;
                 int height = 480;
                 long reportTimeGenerated = LocalDateTime.now().toInstant(ZoneOffset.UTC).getEpochSecond();
                 File file = new File(System.getProperty("user.dir") + "\\src\\babylinapp\\reports\\chart.png");
@@ -164,10 +162,14 @@ public class reportsController {
             PDDocument pdDocument = new PDDocument();
             PDPage pdPage = new PDPage();
             try {
+                if (revenue.isSelected()){
+                    pdDocument.getDocumentInformation().setSubject("Report for Revenue");
+                }else if (products.isSelected()){
+                    pdDocument.getDocumentInformation().setSubject("Report for Products");
+                }
                 pdDocument.getDocumentInformation().setTitle("Babylin Consult Report");
                 pdDocument.getDocumentInformation().setAuthor("Babylin Consult");
                 pdDocument.getDocumentInformation().setCreator("Babylin Consult Stock Management App - PDFBox API");
-                pdDocument.getDocumentInformation().setSubject("Report");
                 Calendar date = new GregorianCalendar();
                 date.setTime(Date.from(Instant.now()));
                 pdDocument.getDocumentInformation().setCreationDate(date);

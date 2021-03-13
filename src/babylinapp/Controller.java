@@ -10,8 +10,10 @@ import javafx.stage.Window;
 import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.regex.Pattern;
 
 public class Controller {
     @FXML
@@ -44,7 +46,7 @@ public class Controller {
     private TextField fnRegister;
 
     @FXML
-    private  TextField lnRegister;
+    private TextField lnRegister;
 
     @FXML
     private DatePicker DOB;
@@ -65,7 +67,7 @@ public class Controller {
     private Label registerTxtBtn;
 
     @FXML
-    private  Label signInTxtBtn;
+    private Label signInTxtBtn;
 
 
     @FXML
@@ -82,11 +84,12 @@ public class Controller {
                     "Please enter a password");
             return;
         }
-        if (u_type_login.getValue()== null){
+        if (u_type_login.getValue() == null) {
             showAlert(Alert.AlertType.ERROR, owner, "Form Error!",
                     "Please select user type.");
             return;
         }
+
 
         String emailId = emailIdField.getText();
         String password = passwordField.getText();
@@ -103,63 +106,75 @@ public class Controller {
             menu.start(stage);
         }
     }
+
     @FXML
     private void register() throws IOException {
         Stage stage;
-        Window owner =submitButtonRegister.getScene().getWindow();
+        Window owner = submitButtonRegister.getScene().getWindow();
         String fn = fnRegister.getText();
         String ln = lnRegister.getText();
-        LocalDate dob =DOB.getValue();
-        String us_type=u_type_register.getValue();
-        String addr=address.getText();
-        String phone=number.getText();
-        String email=emailIdFieldRegister.getText();
-        String pwd=passwordFieldRegister.getText();
-        String pwd1=passwordFieldRegister1.getText();
+        LocalDate dob = DOB.getValue();
+        String us_type = u_type_register.getValue();
+        String addr = address.getText();
+        String phone = number.getText();
+        String email = emailIdFieldRegister.getText();
+        String pwd = passwordFieldRegister.getText();
+        String pwd1 = passwordFieldRegister1.getText();
+        Period period = Period.between(dob, LocalDate.now());
         //Checks if inputs are empty
-        if(fnRegister.getText().equals("")){
-            showAlert(Alert.AlertType.ERROR,owner,"FORM ERROR!","Please Enter Your First Name");
+        if (fnRegister.getText().equals("")) {
+            showAlert(Alert.AlertType.ERROR, owner, "FORM ERROR!", "Please Enter Your First Name");
             return;
         }
 
-        if (lnRegister.getText().equals("")){
-            showAlert(Alert.AlertType.ERROR,owner,"FORM ERROR!","Please Enter Your Last Name");
+        if (lnRegister.getText().equals("")) {
+            showAlert(Alert.AlertType.ERROR, owner, "FORM ERROR!", "Please Enter Your Last Name");
             return;
         }
 
-        if(DOB.getValue() == null){
-            showAlert(Alert.AlertType.ERROR,owner,"FORM ERROR!","Please Enter Your Date of Birth");
+        if (DOB.getValue() == null) {
+            showAlert(Alert.AlertType.ERROR, owner, "FORM ERROR!", "Please Enter Your Date of Birth");
             return;
         }
-        if(Date.from(Instant.now()).compareTo((java.sql.Date.from(DOB.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant())))<0){
-            showAlert(Alert.AlertType.ERROR,owner,"FORM ERROR!","Enter the right date of birth");
+        if (period.getYears() < 13) {
+            showAlert(Alert.AlertType.ERROR, owner, "FORM ERROR!", "Must be 13years or above to sign up.");
             return;
         }
-        if (u_type_register.getValue() == null){
-            showAlert(Alert.AlertType.ERROR,owner,"FORM ERROR!","Please Enter Your User Type");
+        if (Date.from(Instant.now()).compareTo((java.sql.Date.from(DOB.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()))) < 0) {
+            showAlert(Alert.AlertType.ERROR, owner, "FORM ERROR!", "Enter the right date of birth");
             return;
         }
-        if(emailIdFieldRegister.getText().equals("")){
-            showAlert(Alert.AlertType.ERROR,owner,"FORM ERROR!", "Please Enter Your Email");
+        if (u_type_register.getValue() == null) {
+            showAlert(Alert.AlertType.ERROR, owner, "FORM ERROR!", "Please Enter Your User Type");
             return;
         }
-        if(passwordFieldRegister.getText().equals("")){
-            showAlert(Alert.AlertType.ERROR,owner,"FORM ERROR!","Please Enter Your Password");
+        if (emailIdFieldRegister.getText().equals("")) {
+            showAlert(Alert.AlertType.ERROR, owner, "FORM ERROR!", "Please Enter Your Email");
+            return;
         }
-        if(passwordFieldRegister1.getText().equals("")){
-            showAlert(Alert.AlertType.ERROR,owner,"FORM ERROR!","Please Enter Your Password");
+        if (passwordFieldRegister.getText().equals("")) {
+            showAlert(Alert.AlertType.ERROR, owner, "FORM ERROR!", "Please Enter Your Password");
+            return;
+        }
+        if (passwordFieldRegister1.getText().equals("")) {
+            showAlert(Alert.AlertType.ERROR, owner, "FORM ERROR!", "Please Enter Your Password");
+            return;
         }
 
-        if(pwd.equals(pwd1)) {
+        if (!validEmail(emailIdFieldRegister.getText())) {
+            showAlert(Alert.AlertType.ERROR, owner, "FORM ERROR!", "Please Enter A Valid Email!");
+            return;
+        }
+
+        if (pwd.equals(pwd1)) {
             System.out.println(passwordFieldRegister.getText());
             System.out.println(DOB.getValue().toString());
-        }
-        else {
+        } else {
             showAlert(Alert.AlertType.ERROR, owner, "FORM ERROR!", "Please Enter Valid Password");
             return;
         }
         jdbcController jdbcController = new jdbcController();
-        boolean flag=jdbcController.register(fn,ln,dob,us_type,addr,phone,email,pwd,pwd1);
+        boolean flag = jdbcController.register(fn, ln, dob, us_type, addr, phone, email, pwd, pwd1);
 
         if (!flag) {
             infoBox("User registered already", null, "Failed");
@@ -172,13 +187,24 @@ public class Controller {
     }
 
 
-
     public static void infoBox(String infoMessage, String headerText, String title) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setContentText(infoMessage);
         alert.setTitle(title);
         alert.setHeaderText(headerText);
         alert.showAndWait();
+    }
+
+    public static boolean validEmail(String email) {
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\." +
+                "[a-zA-Z0-9_+&*-]+)*@" +
+                "(?:[a-zA-Z0-9-]+\\.)+[a-z" +
+                "A-Z]{2,7}$";
+
+        Pattern pat = Pattern.compile(emailRegex);
+        if (email == null)
+            return false;
+        return pat.matcher(email).matches();
     }
 
     public static void errBox(String infoMessage, String headerText, String title) {
@@ -201,8 +227,8 @@ public class Controller {
     }
 
     public void switchRegister() throws Exception {
-            Stage stage = (Stage) registerTxtBtn.getScene().getWindow();
-            new register().start(stage);
+        Stage stage = (Stage) registerTxtBtn.getScene().getWindow();
+        new register().start(stage);
 
     }
 

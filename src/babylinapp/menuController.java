@@ -13,7 +13,8 @@ import java.sql.*;
 import java.util.ResourceBundle;
 
 public class menuController implements Initializable {
-
+    @FXML
+    private Button contactButton;
     @FXML
     private AnchorPane menuPane;
     @FXML
@@ -109,4 +110,10 @@ public class menuController implements Initializable {
     }
 
 
+    @FXML
+    private void displayContact() throws IOException {
+        System.out.println("Hello");
+        Stage stage = (Stage) contactButton.getScene().getWindow();
+        new contactPage().start(stage);
+    }
 }

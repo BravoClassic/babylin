@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="babylinapp.contactPageController">
+   <HBox prefHeight="400.0" prefWidth="200.0">
+      <AnchorPane prefHeight="200.0" prefWidth="200.0">
+         <ComboBox fx:id="comboContactName" layoutX="25.0" layoutY="188.0" onAction="#displayContact" prefWidth="150.0" promptText="Select Contact" />
+      </AnchorPane>
+   </HBox>
+   <HBox layoutX="200.0" layoutY="-1.0" prefHeight="400.0" prefWidth="399.0">
+      <AnchorPane prefHeight="400.0" prefWidth="400.0">
+
+         <Label layoutX="73.0" layoutY="100.0" prefHeight="17.0" prefWidth="40.0" text="Name" />
+         <Label layoutX="66.0" layoutY="140.0" text="Birthday" />
+         <Label layoutX="73.0" layoutY="175.0" text="Email" />
+         <Label layoutX="66.0" layoutY="207.0" text="Address" />
+         <Label layoutX="69.0" layoutY="246.0" text="Phone" />
+         <TextField fx:id="fullName" layoutX="115.0" layoutY="96.0" prefHeight="25.0" prefWidth="208.0" />
+         <DatePicker fx:id="dob" cache="true" layoutX="115.0" layoutY="136.0" prefHeight="25.0" prefWidth="208.0" />
+         <TextField fx:id="email" layoutX="115.0" layoutY="171.0" />
+         <TextField fx:id="address" layoutX="115.0" layoutY="203.0" prefHeight="25.0" prefWidth="208.0" />
+         <TextField fx:id="phone" layoutX="115.0" layoutY="242.0" />
+         <Button fx:id="back" layoutX="209.0" layoutY="340.0" onAction="#goMenu" mnemonicParsing="false" prefHeight="25.0" prefWidth="55.0" text="Back" />
+         <Label layoutX="79.0" layoutY="37.0" text="Contact Details">
+            <font>
+               <Font size="30.0" />
+            </font>
+         </Label>
+         <Button fx:id="update" layoutX="148.0" layoutY="340.0" mnemonicParsing="false" onAction="#updateContact" prefHeight="25.0" prefWidth="55.0" text="Update" />
+         <Button fx:id="copyEmail" layoutX="267.0" layoutY="171.0" mnemonicParsing="false" onAction="#copyMail" prefHeight="25.0" prefWidth="55.0" text="Copy" />
+         <Button fx:id="copyNum" layoutX="267.0" layoutY="242.0" mnemonicParsing="false" onAction="#copyNumber" prefHeight="25.0" prefWidth="55.0" text="Copy" />
+         <Button fx:id="reset" layoutX="269.0" layoutY="340.0" mnemonicParsing="false" onAction="#resetPwd" prefHeight="25.0" prefWidth="55.0" text="Reset" />
+         <PasswordField fx:id="pwd" layoutX="115.0" layoutY="284.0" prefHeight="25.0" prefWidth="208.0" />
+         <Label layoutX="61.0" layoutY="288.0" text="Password" fx:id="pwdLabel" />
+         <CheckBox fx:id="pwdChange" layoutX="116.0" layoutY="317.0" mnemonicParsing="false" text="Check this box to change password" />
+      </AnchorPane>
+   </HBox>
+</AnchorPane>

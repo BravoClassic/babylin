@@ -32,7 +32,11 @@ public class jdbcController {
     protected static final String SELECT_CUST_QUERY_ = "SELECT * FROM babylinapp_users WHERE userName= ? and email= ?";//CUSTOMERS
     protected static final String SELECT_CUST_QUERY_VALIDATE = "SELECT * FROM babylinapp_users WHERE email= ?";//CUSTOMERS
     protected static final String SELECT_CUST="SELECT * FROM babylinapp_users WHERE email= ? and password= ?";
-    protected static final String INSERTS_CUST_QUERY = "INSERT INTO babylinapp_users (userId, userName, email, password, address, phone, DOB) VALUES(?,?,?,?,?,?,?)";
+    protected static final String INSERTS_CUST_QUERY ="INSERT INTO babylinapp_users (userId, userName, email, password, address, phone, DOB) VALUES(?,?,?,?,?,?,?)";
+    protected static final String UPDATE_CUST="UPDATE babylinapp_users SET userName = ?,DOB=?, email=?, address=?,phone=?   WHERE userId = ? ";// UPDATE CUSTOMER STATEMENT
+    protected static final String UPDATE_CUST_PWD="UPDATE babylinapp_users SET userName = ?,DOB=?, email=?, address=?,phone=?, password= ?   WHERE userId = ? ";// UPDATE CUSTOMER STATEMENT
+    protected static final String UPDATE_CUST_PWD_CHANGE="UPDATE babylinapp_users SET password= ?   WHERE email = ? ";// UPDATE CUSTOMER STATEMENT
+
 
     //Products Section
     protected static final String INSERT_QUERY_PRODUCTS = "INSERT INTO babylinapp_products VALUES(?,?,?,?,?)";//INSERT INTO PRODUCTS TABLE
@@ -52,7 +56,8 @@ public class jdbcController {
     protected static final String UPDATE_QUERY_RAW_MATERIALS_QUANTITY="UPDATE babylinapp_rawmaterials SET quantity = quantity + ?  WHERE rawMaterialName = ? ";// UPDATE RAW MATERIALS STATEMENT
     protected static final String DELETE_QUERY_RAW_DELETE="DELETE FROM babylinapp_rawmaterials WHERE rawMaterialName=?";//DELETE PRODUCT STATEMENT
 
-
+    protected static final String SELECT_CLIENTS_DETAILS = "SELECT * FROM babylinapp_users";
+//    protected static final String SELECT_CLIENT_DETAILS = "SELECT * FROM babylinapp_users where email=?";
 
 
     protected boolean validate(String a, String b, String c) {
@@ -122,7 +127,7 @@ public class jdbcController {
                     preparedStatement1.setString(3, email);
                     preparedStatement1.setString(5, address);
                     preparedStatement1.setString(6, phone);
-                    preparedStatement1.setDate(7, Date.valueOf(DOB));
+                    preparedStatement1.setString(7, String.valueOf(DOB));
                     if (hashpwd1.equals(hasdpwd2)) {
                         preparedStatement1.setString(4, hashpwd1);
                         boolean resultSet1 = preparedStatement1.execute();
@@ -130,13 +135,10 @@ public class jdbcController {
                             userType="Customer";
                             emailUniversal=email;
                         }
-//                        preparedStatement.close();
-//                        resultSet.close();
                         preparedStatement1.close();
                         connection.close();
                     } else {
                         pwdValidate = false;
-                        System.out.println("not working register customer ");
                     }
 //                }
                 connection.close();
@@ -151,7 +153,7 @@ public class jdbcController {
                 preparedStatement.setString(1, null);
                 preparedStatement.setString(2, fn);
                 preparedStatement.setString(3, ln);
-                preparedStatement.setDate(4, Date.valueOf(DOB));
+                preparedStatement.setString(4, String.valueOf(DOB));
                 preparedStatement.setString(5, email);
                 preparedStatement.setString(7, address);
                 preparedStatement.setString(8, phone);
@@ -178,7 +180,7 @@ public class jdbcController {
         return pwdValidate;
     }
 
-    private boolean checkEmail(String email, String userType) {
+    public boolean checkEmail(String email, String userType) {
         boolean check = false;
             if (userType.equals("Customer")) {
                 try {

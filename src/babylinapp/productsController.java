@@ -84,21 +84,20 @@ public class productsController implements Initializable {
 
     @FXML
     private void viewProduct() throws SQLException {
-        Connection connection = DriverManager.getConnection(jdbcController.url);
-        PreparedStatement preparedStatement = connection.prepareStatement(jdbcController.SELECT_QUERY_PRODUCTS);
+            Connection connection = DriverManager.getConnection(jdbcController.url);
+            PreparedStatement preparedStatement = connection.prepareStatement(jdbcController.SELECT_QUERY_PRODUCTS);
 
-        ResultSet resultSet = preparedStatement.executeQuery();
-        while (resultSet.next()) {
-            Integer result0 = resultSet.getInt("productId");
-            String result = resultSet.getString("productName");
-            Integer result1=resultSet.getInt("quantity");
-            Double result2= resultSet.getDouble("unitPrice");
-            String result3 = resultSet.getString("productDescription");
-            productList.add(new productClass(result0,result, result1, result2, result3));
-            comboProductName.getItems().add(resultSet.getString("productName"));
-        }
-        connection.close();
-
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                Integer result0 = resultSet.getInt("productId");
+                String result = resultSet.getString("productName");
+                Integer result1 = resultSet.getInt("quantity");
+                Double result2 = resultSet.getDouble("unitPrice");
+                String result3 = resultSet.getString("productDescription");
+                productList.add(new productClass(result0, result, result1, result2, result3));
+                comboProductName.getItems().add(resultSet.getString("productName"));
+            }
+            connection.close();
     }
 
     @FXML
